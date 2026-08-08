@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>404 — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="blank">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon;
+      const isAuth = Auth.isAuthenticated();
+      const href = isAuth ? 'app.html' : 'index.html';
+      const label = isAuth ? t('notFound.back') : t('notFound.home');
+
+      document.getElementById('page').innerHTML =
+        '<div class="flex min-h-screen flex-col items-center justify-center px-4 text-center" style="background-color:var(--tx-body-bg)">' +
+        '<span class="flex h-20 w-20 items-center justify-center rounded-3xl bg-brand-50 text-brand-500 dark:bg-brand-500/15">' + icon('sparkles', { size: 40 }) + '</span>' +
+        '<p class="mt-8 text-title-lg font-bold text-heading">404</p>' +
+        '<h1 class="mt-2 text-xl font-semibold text-heading">' + t('notFound.title') + '</h1>' +
+        '<p class="mt-2 max-w-md text-sm text-muted">' + t('notFound.desc') + '</p>' +
+        '<a href="' + href + '" class="mt-8 flex h-11 items-center gap-2 rounded-lg bg-brand-500 px-6 text-sm font-medium text-white transition hover:bg-brand-600">' +
+        icon('arrow-right', { size: 16 }) + ' ' + label + '</a></div>';
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

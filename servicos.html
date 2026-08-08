@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Serviços — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="public">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    let activeCategory = 'all';
+    let openFaq = Data.FAQS[0] ? Data.FAQS[0].id : null;
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon;
+      const services = PF.get().services;
+      const categories = Query.serviceCategories(services);
+      const visible = Query.servicesByCategory(services, activeCategory);
+
+      const chip = (key, label, active) =>
+        '<button type="button" data-cat="' + key + '" class="h-9 rounded-lg px-4 text-sm font-medium transition ' +
+        (active ? 'bg-brand-500 text-white' : 'border border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' + label + '</button>';
+
+      const filters =
+        chip('all', t('common.all'), activeCategory === 'all') +
+        categories.map((c) => chip(c, t('serviceCategories.' + c), activeCategory === c)).join('');
+
+      const header =
+        '<header class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16 lg:px-8">' +
+        '<div class="max-w-2xl"><p class="text-sm font-semibold uppercase tracking-wider text-brand-500">' + t('services.eyebrow') + '</p>' +
+        '<h1 class="mt-2 font-bold text-heading text-title-sm sm:text-title-md">' + t('services.title') + '</h1>' +
+        '<p class="mt-3 text-muted">' + t('services.subtitle') + '</p></div>' +
+        '<div class="mt-8 flex flex-wrap gap-2">' + filters + '</div>' +
+        '<div class="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">' +
+        (visible.length ? visible.map((s) => UI.serviceCard(s, true)).join('') : UI.emptyState({ icon: 'layers', title: t('common.noResults') })) +
+        '</div></header>';
+
+      const process =
+        '<section class="border-y border-themed bg-gray-50 dark:bg-gray-900/40"><div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">' +
+        '<div class="max-w-2xl"><p class="text-sm font-semibold uppercase tracking-wider text-brand-500">' + t('home.process.eyebrow') + '</p>' +
+        '<h2 class="mt-2 font-bold text-heading text-title-sm">' + t('home.process.title') + '</h2>' +
+        '<p class="mt-3 text-muted">' + t('home.process.subtitle') + '</p></div>' +
+        '<div class="mt-10">' + UI.processSteps() + '</div></div></section>';
+
+      const faq =
+        '<section class="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">' +
+        '<h2 class="font-bold text-heading text-title-sm">' + t('services.faqTitle') + '</h2>' +
+        '<div class="mt-8">' + UI.faqAccordion(openFaq) + '</div></section>';
+
+      const cta =
+        '<section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">' +
+        '<div class="flex flex-col items-center justify-between gap-6 rounded-3xl border border-themed surface-card px-6 py-10 text-center sm:px-12 lg:flex-row lg:text-left">' +
+        '<div><h2 class="text-xl font-bold text-heading">' + t('services.ctaTitle') + '</h2>' +
+        '<p class="mt-2 text-muted">' + t('services.ctaSubtitle') + '</p></div>' +
+        '<a href="orcamento.html" class="inline-flex h-12 shrink-0 items-center gap-2 rounded-xl bg-brand-500 px-6 text-sm font-medium text-white transition hover:bg-brand-600">' + t('home.cta.button') + icon('arrow-right', { size: 18 }) + '</a>' +
+        '</div></section>';
+
+      document.getElementById('page').innerHTML = header + process + faq + cta;
+
+      document.querySelectorAll('[data-cat]').forEach((el) =>
+        el.addEventListener('click', () => {
+          activeCategory = el.getAttribute('data-cat');
+          window.renderPage();
+        })
+      );
+      document.querySelectorAll('[data-faq]').forEach((el) =>
+        el.addEventListener('click', () => {
+          const id = Number(el.getAttribute('data-faq'));
+          openFaq = openFaq === id ? null : id;
+          window.renderPage();
+        })
+      );
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

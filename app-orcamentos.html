@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Propostas — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="app" data-guard="true">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    const STATUSES = ['all', 'rascunho', 'enviada', 'aceita', 'recusada'];
+
+    let status = 'all';
+    let openId = null;
+
+    function currentProposal() {
+      return openId != null ? Query.proposalById(PF.get().proposals, openId) : null;
+    }
+
+    function drawerBody(p) {
+      const t = UI.t, esc = UI.esc;
+      const input = 'h-10 w-full rounded-lg border border-themed bg-transparent px-3 text-sm text-body focus-ring';
+      return '<div class="space-y-6">' +
+        '<div class="grid gap-4 sm:grid-cols-2">' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('proposals.client') + '</span>' +
+        '<input data-prop="client" value="' + esc(p.client) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('proposals.validUntil') + '</span>' +
+        '<input data-prop="validUntil" type="date" value="' + esc(p.validUntil.slice(0, 10)) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('proposals.titleColumn') + '</span>' +
+        '<input data-prop="title" value="' + esc(p.title) + '" class="' + input + '"/></label>' +
+        '</div>' +
+        UI.proposalItemsEditor(p.items, p.discount) +
+        '</div>';
+    }
+
+    function drawerFooter(p) {
+      const t = UI.t, icon = UI.icon;
+      const buttons = ['rascunho', 'enviada', 'aceita', 'recusada'].map((s) =>
+        '<button type="button" data-status="' + s + '" class="h-9 rounded-lg px-3 text-xs font-medium transition ' +
+        (p.status === s ? 'bg-brand-500 text-white' : 'border border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' +
+        t('proposalStatuses.' + s) + '</button>'
+      ).join('');
+      return '<div class="flex flex-wrap items-center gap-2">' + buttons +
+        '<button type="button" data-remove class="ml-auto inline-flex h-9 items-center gap-2 rounded-lg border border-themed px-3 text-xs font-medium text-error-500 transition hover:bg-error-50 dark:hover:bg-error-500/10">' +
+        icon('trash', { size: 14 }) + t('common.remove') + '</button></div>';
+    }
+
+    /** Live totals without re-rendering (keeps caret position in the inputs). */
+    function refreshTotals(p) {
+      const cells = document.querySelectorAll('#prop-drawer [data-line-total]');
+      p.items.forEach((it, i) => {
+        if (cells[i]) cells[i].textContent = UI.fmt(it.qty * it.price);
+      });
+      const sub = document.querySelector('#prop-drawer [data-subtotal]');
+      if (sub) sub.textContent = UI.fmt(Query.proposalSubtotal(p));
+      const total = document.querySelector('#prop-drawer [data-total]');
+      if (total) total.textContent = UI.fmt(Query.proposalTotal(p));
+    }
+
+    function wireDrawer() {
+      const p = currentProposal();
+      if (!p) return;
+
+      document.querySelectorAll('#prop-drawer [data-prop]').forEach((el) =>
+        el.addEventListener('input', () => {
+          const patch = {};
+          patch[el.getAttribute('data-prop')] = el.value;
+          PF.updateProposal(p.id, patch);
+          const row = document.querySelector('[data-row="' + p.id + '"]');
+          if (row) window.renderRow(p.id);
+        })
+      );
+
+      document.querySelectorAll('#prop-drawer [data-item-field]').forEach((el) =>
+        el.addEventListener('input', () => {
+          const index = Number(el.closest('[data-item-index]').getAttribute('data-item-index'));
+          const field = el.getAttribute('data-item-field');
+          const items = currentProposal().items.map((it, i) => {
+            if (i !== index) return it;
+            if (field === 'qty') return Object.assign({}, it, { qty: Math.max(1, Number(el.value) || 1) });
+            if (field === 'price') return Object.assign({}, it, { price: Math.max(0, Number(el.value) || 0) });
+            return Object.assign({}, it, { description: el.value });
+          });
+          PF.updateProposal(p.id, { items: items });
+          refreshTotals(currentProposal());
+        })
+      );
+
+      const discount = document.querySelector('#prop-drawer [data-item-discount]');
+      if (discount) {
+        discount.addEventListener('input', () => {
+          PF.updateProposal(p.id, { discount: Math.min(100, Math.max(0, Number(discount.value) || 0)) });
+          refreshTotals(currentProposal());
+        });
+      }
+
+      const addItem = document.querySelector('#prop-drawer [data-item-add]');
+      if (addItem) {
+        addItem.addEventListener('click', () => {
+          PF.updateProposal(p.id, { items: [...currentProposal().items, { description: '', qty: 1, price: 0 }] });
+          window.renderPage();
+        });
+      }
+
+      document.querySelectorAll('#prop-drawer [data-item-remove]').forEach((el) =>
+        el.addEventListener('click', () => {
+          const index = Number(el.getAttribute('data-item-remove'));
+          PF.updateProposal(p.id, { items: currentProposal().items.filter((_, i) => i !== index) });
+          window.renderPage();
+        })
+      );
+
+      document.querySelectorAll('#prop-drawer [data-status]').forEach((el) =>
+        el.addEventListener('click', () => {
+          const s = el.getAttribute('data-status');
+          PF.updateProposal(p.id, { status: s });
+          window.renderPage();
+          UI.notify(UI.t('proposals.statusChanged', { status: UI.t('proposalStatuses.' + s) }), 'success');
+        })
+      );
+
+      const removeBtn = document.querySelector('#prop-drawer [data-remove]');
+      if (removeBtn) {
+        removeBtn.addEventListener('click', () => {
+          PF.removeProposal(p.id);
+          openId = null;
+          window.renderPage();
+          UI.notify(UI.t('proposals.removed'), 'success');
+        });
+      }
+
+      document.querySelectorAll('#prop-drawer [data-drawer-close]').forEach((el) =>
+        el.addEventListener('click', () => { openId = null; window.renderPage(); })
+      );
+    }
+
+    /** Refresh a single table row after inline edits in the drawer. */
+    window.renderRow = function (id) {
+      const p = Query.proposalById(PF.get().proposals, id);
+      const row = document.querySelector('[data-row="' + id + '"]');
+      if (!p || !row) return;
+      row.querySelector('[data-cell="client"]').textContent = p.client || '—';
+      row.querySelector('[data-cell="title"]').textContent = p.title;
+      row.querySelector('[data-cell="total"]').textContent = UI.fmt(Query.proposalTotal(p));
+    };
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc;
+      const proposals = PF.get().proposals;
+      const visible = status === 'all' ? proposals : proposals.filter((p) => p.status === status);
+      const current = currentProposal();
+
+      const chips = STATUSES.map((s) =>
+        '<button type="button" data-filter="' + s + '" class="h-9 rounded-lg px-3 text-sm font-medium transition ' +
+        (status === s ? 'bg-brand-500 text-white' : 'border border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' +
+        (s === 'all' ? t('common.all') : t('proposalStatuses.' + s)) + '</button>'
+      ).join('');
+
+      const table = visible.length === 0
+        ? UI.emptyState({ icon: 'file-text', title: t('proposals.emptyTitle'), description: t('proposals.emptyDesc') })
+        : '<div class="overflow-x-auto rounded-2xl border border-themed surface-card shadow-theme-sm">' +
+          '<table class="w-full min-w-[720px] text-sm"><thead>' +
+          '<tr class="border-b border-themed text-left text-xs uppercase tracking-wider text-muted">' +
+          '<th class="px-5 py-3 font-medium">' + t('proposals.code') + '</th>' +
+          '<th class="px-5 py-3 font-medium">' + t('proposals.client') + '</th>' +
+          '<th class="px-5 py-3 font-medium">' + t('proposals.titleColumn') + '</th>' +
+          '<th class="px-5 py-3 font-medium">' + t('proposals.validUntil') + '</th>' +
+          '<th class="px-5 py-3 font-medium">' + t('common.status') + '</th>' +
+          '<th class="px-5 py-3 text-right font-medium">' + t('proposals.total') + '</th>' +
+          '<th class="w-12 px-2 py-3"></th></tr></thead>' +
+          '<tbody class="divide-y divide-[color:var(--tx-border)]">' +
+          visible.map((p) =>
+            '<tr data-row="' + p.id + '" class="cursor-pointer transition hover:bg-gray-50 dark:hover:bg-gray-800/50">' +
+            '<td class="px-5 py-3 font-medium text-heading">' + esc(p.code) + '</td>' +
+            '<td class="px-5 py-3 text-body" data-cell="client">' + esc(p.client || '—') + '</td>' +
+            '<td class="px-5 py-3 text-body" data-cell="title">' + esc(p.title) + '</td>' +
+            '<td class="px-5 py-3"><span class="text-muted">' + UI.fmtDate(p.validUntil) + '</span>' +
+            (Query.isExpired(p) ? '<span class="ml-2">' + UI.badge(t('proposals.expired'), 'error') + '</span>' : '') + '</td>' +
+            '<td class="px-5 py-3">' + UI.proposalPill(p.status) + '</td>' +
+            '<td class="px-5 py-3 text-right font-medium text-heading" data-cell="total">' + UI.fmt(Query.proposalTotal(p)) + '</td>' +
+            '<td class="px-2 py-3">' + icon('chevron-right', { size: 16, className: 'text-muted' }) + '</td></tr>'
+          ).join('') +
+          '</tbody></table></div>';
+
+      document.getElementById('page').innerHTML =
+        UI.pageHeader({
+          title: t('proposals.title'),
+          subtitle: t('proposals.subtitle'),
+          action: '<button type="button" data-new class="inline-flex h-10 items-center gap-2 rounded-lg bg-brand-500 px-4 text-sm font-medium text-white transition hover:bg-brand-600">' +
+            icon('plus', { size: 16 }) + t('proposals.new') + '</button>',
+        }) +
+        '<div class="mb-4 flex flex-wrap gap-2">' + chips + '</div>' +
+        table +
+        UI.drawer('prop-drawer', {
+          title: current ? esc(current.code) : '',
+          subtitle: current ? UI.fmtDate(current.createdAt) : '',
+          body: current ? drawerBody(current) : '',
+          footer: current ? drawerFooter(current) : '',
+          width: 'max-w-3xl',
+        });
+
+      if (current) UI.openDrawer('prop-drawer');
+
+      document.querySelectorAll('[data-filter]').forEach((el) =>
+        el.addEventListener('click', () => { status = el.getAttribute('data-filter'); window.renderPage(); })
+      );
+      document.querySelectorAll('[data-row]').forEach((el) =>
+        el.addEventListener('click', () => { openId = Number(el.getAttribute('data-row')); window.renderPage(); })
+      );
+      const newBtn = document.querySelector('[data-new]');
+      if (newBtn) {
+        newBtn.addEventListener('click', () => {
+          const created = PF.addProposal({
+            leadId: null,
+            client: '',
+            title: t('proposals.newTitle'),
+            items: [{ description: t('proposals.newItem'), qty: 1, price: 0 }],
+            discount: 0,
+            status: 'rascunho',
+            validUntil: new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10),
+          });
+          openId = created.id;
+          window.renderPage();
+        });
+      }
+
+      wireDrawer();
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

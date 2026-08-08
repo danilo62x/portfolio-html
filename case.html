@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Case — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="public">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    const SLUG = new URLSearchParams(window.location.search).get('slug') || '';
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc, st = PF.get();
+      const study = Query.caseBySlug(st.cases, SLUG);
+      const page = document.getElementById('page');
+
+      if (!study || !study.published) {
+        document.title = t('cases.notFoundTitle') + ' — ' + t('brand');
+        page.innerHTML =
+          '<div class="mx-auto max-w-3xl px-4 py-24 sm:px-6 lg:px-8">' +
+          UI.emptyState({
+            icon: 'briefcase',
+            title: t('cases.notFoundTitle'),
+            description: t('cases.notFoundDesc'),
+            action: '<a href="cases.html" class="inline-flex h-11 items-center gap-2 rounded-lg bg-brand-500 px-5 text-sm font-medium text-white">' +
+              icon('arrow-right', { size: 16, className: 'rotate-180' }) + t('cases.backToList') + '</a>',
+          }) + '</div>';
+        return;
+      }
+
+      document.title = study.title + ' — ' + t('brand');
+
+      const usedServices = Query.servicesOfCase(st.services, study);
+      const quote = Query.testimonialForCase(st.testimonials, study.id);
+      const related = Query.relatedCases(st.cases, study, 3);
+      const next = Query.nextCase(st.cases, study);
+
+      const header =
+        '<header class="relative">' +
+        '<div class="aspect-16/9 max-h-[520px] w-full overflow-hidden lg:aspect-21/9"><img src="' + study.cover + '" alt="' + esc(study.title) + '" class="h-full w-full object-cover"/></div>' +
+        '<div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8"><div class="-mt-16 rounded-2xl border border-themed surface-card p-6 shadow-theme-lg md:p-10">' +
+        '<div class="flex flex-wrap items-center gap-3">' + UI.badge(t('caseCategories.' + study.category), 'brand', { variant: 'solid' }) +
+        '<span class="text-sm text-muted">' + esc(study.client) + ' · ' + study.year + '</span></div>' +
+        '<h1 class="mt-4 font-bold text-heading text-title-sm sm:text-title-md">' + esc(study.title) + '</h1>' +
+        '<p class="mt-4 text-base text-muted sm:text-lg">' + esc(study.summary) + '</p>' +
+        '<dl class="mt-8 grid gap-6 border-t border-themed pt-6 sm:grid-cols-3">' +
+        '<div><dt class="text-xs uppercase tracking-wider text-muted">' + t('caseDetail.client') + '</dt><dd class="mt-1 text-sm font-medium text-heading">' + esc(study.client) + '</dd></div>' +
+        '<div><dt class="text-xs uppercase tracking-wider text-muted">' + t('caseDetail.year') + '</dt><dd class="mt-1 text-sm font-medium text-heading">' + study.year + '</dd></div>' +
+        '<div><dt class="text-xs uppercase tracking-wider text-muted">' + t('caseDetail.services') + '</dt><dd class="mt-1 flex flex-wrap gap-1.5">' +
+        usedServices.map((s) => UI.badge(esc(s.name), 'gray')).join('') + '</dd></div>' +
+        '</dl></div></div></header>';
+
+      const body =
+        '<section class="mx-auto max-w-4xl px-4 py-14 sm:px-6 lg:px-8"><div class="grid gap-10 md:grid-cols-2">' +
+        '<div><h2 class="text-lg font-bold text-heading">' + t('caseDetail.challenge') + '</h2><p class="mt-3 text-sm leading-relaxed text-muted">' + esc(study.challenge) + '</p></div>' +
+        '<div><h2 class="text-lg font-bold text-heading">' + t('caseDetail.solution') + '</h2><p class="mt-3 text-sm leading-relaxed text-muted">' + esc(study.solution) + '</p></div>' +
+        '</div></section>';
+
+      const results = study.results.length
+        ? '<section class="border-y border-themed bg-gray-50 dark:bg-gray-900/40"><div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">' +
+          '<h2 class="text-lg font-bold text-heading">' + t('caseDetail.results') + '</h2>' +
+          '<div class="mt-6 grid gap-6 sm:grid-cols-3">' +
+          study.results.map((r) =>
+            '<div class="rounded-2xl border border-themed surface-card p-6"><p class="font-bold text-brand-500 text-title-sm">' + esc(r.value) + '</p>' +
+            '<p class="mt-1 text-sm text-muted">' + esc(r.label) + '</p></div>'
+          ).join('') + '</div></div></section>'
+        : '';
+
+      const gallery = study.gallery.length
+        ? '<section class="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8"><div class="grid gap-4 sm:grid-cols-2">' +
+          study.gallery.map((src, i) =>
+            '<img src="' + src + '" alt="' + esc(study.title) + ' ' + (i + 1) + '" loading="lazy" class="w-full rounded-2xl object-cover ' +
+            (i === 0 ? 'sm:col-span-2 aspect-16/9' : 'aspect-4/3') + '"/>'
+          ).join('') + '</div></section>'
+        : '';
+
+      const testimonial = quote
+        ? '<section class="mx-auto max-w-3xl px-4 pb-14 sm:px-6 lg:px-8">' + UI.testimonialCard(quote) + '</section>'
+        : '';
+
+      const nav =
+        '<section class="mx-auto max-w-5xl px-4 pb-14 sm:px-6 lg:px-8">' +
+        '<div class="flex flex-wrap items-center justify-between gap-4 border-y border-themed py-6">' +
+        '<div class="flex flex-wrap gap-2">' + study.tags.map((tag) => UI.badge(esc(tag), 'gray')).join('') + '</div>' +
+        (next
+          ? '<a href="case.html?slug=' + encodeURIComponent(next.slug) + '" class="inline-flex items-center gap-2 text-sm font-medium text-brand-600 dark:text-brand-400">' +
+            t('caseDetail.next') + ': ' + esc(next.title) + icon('arrow-right', { size: 16 }) + '</a>'
+          : '') +
+        '</div></section>';
+
+      const relatedSection = related.length
+        ? '<section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">' +
+          '<h2 class="text-lg font-bold text-heading">' + t('caseDetail.related') + '</h2>' +
+          '<div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">' + related.map((c) => UI.caseCard(c)).join('') + '</div></section>'
+        : '';
+
+      const cta =
+        '<section class="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">' +
+        '<div class="rounded-3xl bg-brand-500 px-6 py-12 text-center sm:px-12">' +
+        '<h2 class="font-bold text-white text-title-sm">' + t('caseDetail.ctaTitle') + '</h2>' +
+        '<a href="orcamento.html" class="mt-6 inline-flex h-12 items-center gap-2 rounded-xl bg-white px-6 text-sm font-semibold text-brand-600">' + t('home.cta.button') + icon('arrow-right', { size: 18 }) + '</a>' +
+        '</div></section>';
+
+      page.innerHTML = '<article>' + header + body + results + gallery + testimonial + nav + relatedSection + cta + '</article>';
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

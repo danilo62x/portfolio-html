@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Cases — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="public">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    const CATEGORIES = ['all', 'branding', 'web', 'app', 'ecommerce', 'campanha'];
+    const PER_PAGE = 6;
+
+    let search = '';
+    let category = 'all';
+    let page = 1;
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon;
+      const results = Query.sortCases(Query.filterCases(PF.get().cases, { search: search, category: category, onlyPublished: true }));
+      const total = Query.pageCount(results.length, PER_PAGE);
+      const current = Math.min(page, total);
+      const visible = Query.paginate(results, current, PER_PAGE);
+
+      const chips = CATEGORIES.map((c) =>
+        '<button type="button" data-cat="' + c + '" class="h-9 rounded-lg px-4 text-sm font-medium transition ' +
+        (category === c ? 'bg-brand-500 text-white' : 'border border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' +
+        (c === 'all' ? t('common.all') : t('caseCategories.' + c)) + '</button>'
+      ).join('');
+
+      const grid = visible.length === 0
+        ? '<div class="mt-10">' + UI.emptyState({ icon: 'briefcase', title: t('cases.emptyTitle'), description: t('cases.emptyDesc') }) + '</div>'
+        : '<div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">' + visible.map((c) => UI.caseCard(c)).join('') + '</div>';
+
+      document.getElementById('page').innerHTML =
+        '<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16 lg:px-8">' +
+        '<header class="max-w-2xl"><p class="text-sm font-semibold uppercase tracking-wider text-brand-500">' + t('cases.eyebrow') + '</p>' +
+        '<h1 class="mt-2 font-bold text-heading text-title-sm sm:text-title-md">' + t('cases.title') + '</h1>' +
+        '<p class="mt-3 text-muted">' + t('cases.subtitle') + '</p></header>' +
+        '<div class="mt-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">' +
+        '<div class="flex flex-wrap gap-2">' + chips + '</div>' +
+        '<label class="relative w-full lg:w-72">' +
+        '<span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">' + icon('search', { size: 18 }) + '</span>' +
+        '<input data-search type="search" value="' + UI.esc(search) + '" placeholder="' + UI.esc(t('cases.searchPlaceholder')) + '" class="h-11 w-full rounded-lg border border-themed bg-transparent pl-10 pr-3 text-sm text-body focus-ring"/>' +
+        '</label></div>' +
+        '<p class="mt-6 text-sm text-muted">' + t('cases.count', { count: results.length }) + '</p>' +
+        grid +
+        (total > 1 ? '<div class="mt-10">' + UI.pageNav(current, total) + '</div>' : '') +
+        '</div>';
+
+      document.querySelectorAll('[data-cat]').forEach((el) =>
+        el.addEventListener('click', () => {
+          category = el.getAttribute('data-cat');
+          page = 1;
+          window.renderPage();
+        })
+      );
+      document.querySelectorAll('[data-page]').forEach((el) =>
+        el.addEventListener('click', () => {
+          const next = Number(el.getAttribute('data-page'));
+          if (next >= 1 && next <= total) {
+            page = next;
+            window.renderPage();
+          }
+        })
+      );
+
+      const input = document.querySelector('[data-search]');
+      if (input) {
+        input.addEventListener('input', () => {
+          search = input.value;
+          page = 1;
+          window.renderPage();
+          const next = document.querySelector('[data-search]');
+          if (next) {
+            next.focus();
+            next.setSelectionRange(next.value.length, next.value.length);
+          }
+        });
+      }
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

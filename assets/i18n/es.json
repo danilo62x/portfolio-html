@@ -1,0 +1,551 @@
+{
+  "brand": "Estudio Norte",
+  "common": {
+    "search": "Buscar",
+    "noResults": "Sin resultados",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "back": "Volver",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "edit": "Editar",
+    "remove": "Eliminar",
+    "add": "Añadir",
+    "all": "Todos",
+    "theme": "Tema",
+    "loading": "Cargando",
+    "actions": "Acciones",
+    "status": "Estado",
+    "viewAll": "Ver todo",
+    "viewCase": "Ver el caso",
+    "optional": "opcional"
+  },
+  "nav": {
+    "cases": "Trabajos",
+    "services": "Servicios",
+    "about": "Nosotros",
+    "contact": "Contacto",
+    "brief": "Pedir presupuesto",
+    "login": "Entrar",
+    "dashboard": "Panel"
+  },
+  "appNav": {
+    "commercial": "Comercial",
+    "content": "Contenido",
+    "settingsSection": "Cuenta",
+    "dashboard": "Resumen",
+    "leads": "Leads",
+    "proposals": "Propuestas",
+    "cases": "Casos",
+    "services": "Servicios",
+    "testimonials": "Testimonios",
+    "settings": "Ajustes",
+    "notifications": "Notificaciones",
+    "collapse": "Contraer menú",
+    "logout": "Salir",
+    "proTitle": "Embudo comercial",
+    "proDesc": "Sigue los leads del briefing",
+    "openLeads": "Abrir leads"
+  },
+  "notifications": {
+    "newLead": "Nuevo lead: {{name}}",
+    "proposalAccepted": "Propuesta {{name}} aceptada",
+    "casePublished": "Caso publicado: {{name}}"
+  },
+  "auth": {
+    "loginTitle": "Entrar al panel",
+    "loginSubtitle": "Accede a los leads, las propuestas y el portafolio del estudio.",
+    "registerTitle": "Crear cuenta",
+    "registerSubtitle": "Empieza a organizar el comercial de tu estudio.",
+    "email": "Correo",
+    "password": "Contraseña",
+    "name": "Nombre",
+    "studio": "Estudio",
+    "remember": "Mantener sesión",
+    "forgot": "Olvidé mi contraseña",
+    "loginCta": "Entrar",
+    "registerCta": "Crear cuenta",
+    "loggingIn": "Entrando…",
+    "noAccount": "¿Aún no tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "loginLink": "Entrar",
+    "loginError": "Introduce correo y contraseña.",
+    "loginSuccess": "Bienvenido de nuevo",
+    "registerSuccess": "Cuenta creada",
+    "demoTitle": "Cuenta de demostración",
+    "demoHint": "Autenticación simulada: cualquier correo y contraseña entran.",
+    "terms": "Acepto los términos de uso y la política de privacidad."
+  },
+  "validation": {
+    "required": "Campo obligatorio",
+    "email": "Correo no válido",
+    "min": "Escribe al menos {{count}} caracteres"
+  },
+  "serviceCategories": {
+    "branding": "Marca",
+    "web": "Web",
+    "produto": "Producto",
+    "marketing": "Marketing",
+    "motion": "Motion"
+  },
+  "caseCategories": {
+    "branding": "Marca",
+    "web": "Sitio web",
+    "app": "Aplicación",
+    "ecommerce": "E-commerce",
+    "campanha": "Campaña"
+  },
+  "leadStages": {
+    "novo": "Nuevo",
+    "contato": "En contacto",
+    "proposta": "Propuesta",
+    "ganho": "Ganado",
+    "perdido": "Perdido"
+  },
+  "leadSources": {
+    "site": "Sitio web",
+    "briefing": "Briefing",
+    "indicacao": "Recomendación",
+    "social": "Redes"
+  },
+  "proposalStatuses": {
+    "rascunho": "Borrador",
+    "enviada": "Enviada",
+    "aceita": "Aceptada",
+    "recusada": "Rechazada"
+  },
+  "process": {
+    "s1": {
+      "title": "Descubrimiento",
+      "desc": "Entrevistas, datos y una lectura honesta del problema antes de proponer nada."
+    },
+    "s2": {
+      "title": "Estrategia",
+      "desc": "Alcance, prioridades y el criterio de éxito escritos contigo."
+    },
+    "s3": {
+      "title": "Diseño",
+      "desc": "Ciclos cortos con una entrega navegable, revisada y ajustada cada semana."
+    },
+    "s4": {
+      "title": "Entrega",
+      "desc": "Implementación, pruebas y el traspaso al equipo que lo gestiona a diario."
+    },
+    "s5": {
+      "title": "Medición",
+      "desc": "Seguimos los números acordados durante 90 días tras el lanzamiento."
+    }
+  },
+  "faq": {
+    "q1": {
+      "q": "¿Cuánto dura un proyecto?",
+      "a": "Depende del alcance. Una identidad visual suele llevar seis semanas; un producto digital, de dos a tres meses. Cada servicio muestra su plazo típico en la página de servicios."
+    },
+    "q2": {
+      "q": "¿Cómo funciona el pago?",
+      "a": "Treinta por ciento a la firma y el resto repartido en las entregas acordadas. Los proyectos de más de tres meses pueden facturarse mensualmente."
+    },
+    "q3": {
+      "q": "¿Trabajan con el equipo interno del cliente?",
+      "a": "Sí, y lo preferimos. Nuestro trabajo es entregar el proyecto y dejar al equipo capaz de seguir sin nosotros."
+    },
+    "q4": {
+      "q": "¿Quién se queda con los archivos editables?",
+      "a": "Tú. Todos los archivos editables, el repositorio de código y las cuentas usadas se entregan al cliente al final."
+    },
+    "q5": {
+      "q": "¿Hacen mantenimiento después de la entrega?",
+      "a": "Ofrecemos un contrato mensual opcional de evolución y soporte. No es obligatorio para recibir el proyecto."
+    }
+  },
+  "home": {
+    "hero": {
+      "badge": "Aceptando proyectos para el próximo trimestre",
+      "title": "Marca, producto y web para empresas que necesitan moverse",
+      "subtitle": "Un estudio de 14 personas que trabaja en ciclos cortos, con alcance escrito y resultado medido. Sin presentaciones de 80 diapositivas.",
+      "cta": "Pedir un presupuesto",
+      "secondary": "Ver los trabajos"
+    },
+    "stats": {
+      "projects": "Proyectos entregados",
+      "years": "Años de estudio",
+      "clients": "Clientes activos",
+      "rating": "Nota media de clientes"
+    },
+    "services": {
+      "eyebrow": "Qué hacemos",
+      "title": "Servicios",
+      "subtitle": "Cada proyecto empieza por una pregunta de negocio, no por una referencia visual."
+    },
+    "cases": {
+      "eyebrow": "Trabajos recientes",
+      "title": "Casos destacados",
+      "all": "Ver todos los casos"
+    },
+    "process": {
+      "eyebrow": "Cómo trabajamos",
+      "title": "Cinco etapas, sin sorpresas a mitad de camino",
+      "subtitle": "El mismo proceso en cada proyecto, del rebranding a la app. Lo que cambia es la profundidad de cada etapa."
+    },
+    "testimonials": {
+      "title": "Lo que dicen los clientes"
+    },
+    "clients": {
+      "title": "Empresas que confiaron en el estudio"
+    },
+    "cta": {
+      "title": "Cuéntanos qué necesitas resolver",
+      "subtitle": "Responde el briefing de cuatro pasos y volvemos con una propuesta en hasta tres días hábiles.",
+      "button": "Empezar el briefing"
+    },
+    "footer": {
+      "tagline": "Estudio de marca, producto y web. Trabajamos con alcance escrito y resultado medido.",
+      "rights": "Todos los derechos reservados."
+    }
+  },
+  "landing": {
+    "footer": {
+      "tagline": "Estudio de marca, producto y web. Trabajamos con alcance escrito y resultado medido.",
+      "rights": "Todos los derechos reservados.",
+      "docs": "Servicios",
+      "help": "Ayuda",
+      "privacy": "Privacidad"
+    }
+  },
+  "cases": {
+    "eyebrow": "Portafolio",
+    "title": "Casos",
+    "subtitle": "Proyectos publicados con el problema, la solución y el número que cambió.",
+    "searchPlaceholder": "Buscar por cliente, proyecto o etiqueta",
+    "count": "{{count}} proyectos",
+    "emptyTitle": "Nada encontrado",
+    "emptyDesc": "Prueba otra categoría o limpia la búsqueda.",
+    "notFoundTitle": "Caso no encontrado",
+    "notFoundDesc": "Puede que este proyecto se haya despublicado.",
+    "backToList": "Volver a los casos"
+  },
+  "caseDetail": {
+    "client": "Cliente",
+    "year": "Año",
+    "services": "Servicios",
+    "challenge": "El reto",
+    "solution": "Lo que hicimos",
+    "results": "Resultados",
+    "next": "Siguiente caso",
+    "related": "Proyectos relacionados",
+    "ctaTitle": "¿Quieres un resultado parecido?"
+  },
+  "services": {
+    "eyebrow": "Servicios",
+    "title": "Lo que hace el estudio",
+    "subtitle": "Elige por problema, no por entregable. Si tienes dudas, el briefing ayuda a definirlo.",
+    "priceFrom": "Desde",
+    "weeks": "{{count}} semanas",
+    "request": "Pedir presupuesto",
+    "faqTitle": "Preguntas frecuentes",
+    "ctaTitle": "¿No sabes por dónde empezar?",
+    "ctaSubtitle": "Responde el briefing y te sugerimos el alcance."
+  },
+  "about": {
+    "eyebrow": "Nosotros",
+    "title": "Un estudio pequeño, a propósito",
+    "p1": "Empezamos en 2012 como dos diseñadores atendiendo proyectos de marca. Hoy somos 14 personas entre diseño, estrategia e ingeniería, y seguimos pequeños porque así conseguimos estar de verdad en cada proyecto.",
+    "p2": "No tenemos departamento de nuevos negocios. Quien habla contigo en la primera reunión es quien llevará el trabajo.",
+    "valuesTitle": "Cómo trabajamos",
+    "values": {
+      "v1": {
+        "title": "Investigar antes de dibujar",
+        "desc": "Ninguna pantalla se diseña antes de entender quién la usa y por qué."
+      },
+      "v2": {
+        "title": "Dentro de tu equipo",
+        "desc": "Trabajamos con tu equipo y con acceso a las mismas herramientas."
+      },
+      "v3": {
+        "title": "Un número acordado",
+        "desc": "Cada proyecto tiene un criterio de éxito definido al inicio."
+      },
+      "v4": {
+        "title": "Todo queda contigo",
+        "desc": "Archivos, código y cuentas se entregan al cliente."
+      }
+    },
+    "teamTitle": "Quién lo hace",
+    "teamSubtitle": "Cuatro de las catorce personas del estudio, y las que verás en las reuniones.",
+    "timelineTitle": "Línea de tiempo",
+    "timeline": {
+      "t1": "Dos diseñadores, una sala prestada y los primeros cinco clientes.",
+      "t2": "Primer proyecto de producto digital y la llegada del equipo de ingeniería.",
+      "t3": "Estudio remoto por elección, con personas en cuatro estados.",
+      "t4": "Cien proyectos entregados y el primer contrato de evolución continua.",
+      "t5": "Catorce personas, tres verticales y una lista de espera de dos meses."
+    },
+    "cta": "Hablar con el estudio"
+  },
+  "contact": {
+    "eyebrow": "Contacto",
+    "title": "Hablemos",
+    "subtitle": "Respondemos en un día hábil. Si prefieres, responde el briefing para acelerar la propuesta.",
+    "channels": {
+      "email": "Correo",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "hours": "Horario"
+    },
+    "form": {
+      "name": "Nombre",
+      "email": "Correo",
+      "company": "Empresa",
+      "phone": "Teléfono",
+      "service": "Servicio de interés",
+      "servicePlaceholder": "Selecciona (opcional)",
+      "message": "Mensaje",
+      "messagePlaceholder": "Cuéntanos el contexto y qué necesitas resolver.",
+      "submit": "Enviar mensaje"
+    },
+    "success": "Mensaje enviado. Te contactamos en breve.",
+    "mapPlaceholder": "Mapa de la sede"
+  },
+  "brief": {
+    "eyebrow": "Briefing",
+    "title": "Pide un presupuesto",
+    "subtitle": "Cuatro pasos, unos tres minutos. Volvemos con una propuesta en hasta tres días hábiles.",
+    "steps": {
+      "scope": "Alcance",
+      "budget": "Inversión",
+      "contact": "Contacto",
+      "review": "Revisión"
+    },
+    "scope": {
+      "title": "¿Qué necesitas?",
+      "desc": "Marca todo lo que aplique. Se puede ajustar después."
+    },
+    "budget": {
+      "title": "Rango de inversión",
+      "desc": "Sirve para dimensionar el alcance, no para cerrar precio ahora."
+    },
+    "deadline": {
+      "title": "Plazo deseado"
+    },
+    "contact": {
+      "title": "Cómo te contactamos",
+      "desc": "Solo el nombre y el correo son obligatorios.",
+      "details": "Detalles del proyecto",
+      "detailsPlaceholder": "Contexto, referencias, restricciones, lo que ya se intentó."
+    },
+    "review": {
+      "title": "Revisa antes de enviar",
+      "desc": "Puedes volver a cualquier paso para ajustar.",
+      "scope": "Alcance",
+      "budget": "Inversión",
+      "deadline": "Plazo",
+      "contact": "Contacto"
+    },
+    "submit": "Enviar el briefing",
+    "success": "Briefing enviado",
+    "doneTitle": "Recibimos tu briefing",
+    "doneDesc": "Lo leeremos con calma y volveremos con una propuesta en hasta tres días hábiles.",
+    "doneCases": "Ver los casos",
+    "doneAgain": "Enviar otro briefing"
+  },
+  "dashboard": {
+    "title": "Resumen",
+    "subtitle": "Cómo va el comercial del estudio este mes.",
+    "newProposal": "Nueva propuesta",
+    "kpi": {
+      "leads": "Leads del mes",
+      "leadsHint": "Del sitio web y del briefing",
+      "openProposals": "Propuestas abiertas",
+      "winRate": "Tasa de cierre",
+      "winRateHint": "Aceptadas sobre decididas",
+      "revenue": "Ingresos cerrados",
+      "revenueHint": "Suma de las propuestas aceptadas"
+    },
+    "charts": {
+      "revenue": "Ingresos por mes",
+      "revenueSeries": "Ingresos",
+      "leads": "Leads por mes",
+      "leadsSeries": "Leads",
+      "lastMonths": "Últimos {{count}} meses"
+    },
+    "funnel": {
+      "title": "Embudo por etapa"
+    },
+    "byService": {
+      "title": "Ingresos por servicio",
+      "empty": "Aún no hay propuestas aceptadas."
+    },
+    "latestLeads": "Últimos leads",
+    "openProposals": "Propuestas en espera",
+    "noOpenProposals": "Ninguna propuesta espera respuesta.",
+    "caseCount": "{{count}} casos publicados en el sitio."
+  },
+  "leads": {
+    "title": "Leads",
+    "subtitle": "Arrastra la tarjeta entre columnas para cambiar la etapa.",
+    "searchPlaceholder": "Buscar por nombre, empresa o correo",
+    "count": "{{count}} leads",
+    "emptyColumn": "Nada aquí",
+    "moved": "Lead movido a {{stage}}",
+    "convert": "Generar propuesta",
+    "converted": "Propuesta creada como borrador",
+    "proposalTitle": "Propuesta para {{name}}",
+    "removed": "Lead eliminado",
+    "changeStage": "Cambiar etapa"
+  },
+  "proposals": {
+    "title": "Propuestas",
+    "subtitle": "Ítems, descuento y estado de cada propuesta enviada.",
+    "new": "Nueva propuesta",
+    "newTitle": "Propuesta sin título",
+    "newItem": "Nuevo ítem",
+    "code": "Código",
+    "client": "Cliente",
+    "titleColumn": "Título",
+    "validUntil": "Válida hasta",
+    "item": "Ítem",
+    "qty": "Cant.",
+    "unitPrice": "Precio unitario",
+    "lineTotal": "Total",
+    "addItem": "Añadir ítem",
+    "noItems": "Ningún ítem en la propuesta.",
+    "subtotal": "Subtotal",
+    "discount": "Descuento (%)",
+    "total": "Total",
+    "expired": "Vencida",
+    "statusChanged": "Estado cambiado a {{status}}",
+    "removed": "Propuesta eliminada",
+    "emptyTitle": "Ninguna propuesta",
+    "emptyDesc": "Crea una propuesta o convierte un lead."
+  },
+  "casesAdmin": {
+    "title": "Casos",
+    "subtitle": "Lo que aparece en el portafolio del sitio.",
+    "new": "Nuevo caso",
+    "newTitle": "Nuevo caso",
+    "editTitle": "Editar caso",
+    "published": "Publicado",
+    "draft": "Borrador",
+    "featured": "Destacado",
+    "publishedLabel": "Publicar en el sitio",
+    "featuredLabel": "Mostrar como destacado",
+    "created": "Caso creado",
+    "updated": "Caso actualizado",
+    "removed": "Caso eliminado",
+    "emptyTitle": "Ningún caso",
+    "emptyDesc": "Añade el primer proyecto del portafolio.",
+    "form": {
+      "title": "Título",
+      "client": "Cliente",
+      "year": "Año",
+      "category": "Categoría",
+      "tags": "Etiquetas (separadas por comas)",
+      "summary": "Resumen",
+      "challenge": "El reto",
+      "solution": "Lo que hicimos"
+    }
+  },
+  "servicesAdmin": {
+    "title": "Servicios",
+    "subtitle": "Lo que ofrece el estudio y cuánto cuesta.",
+    "new": "Nuevo servicio",
+    "newTitle": "Nuevo servicio",
+    "editTitle": "Editar servicio",
+    "created": "Servicio creado",
+    "updated": "Servicio actualizado",
+    "removed": "Servicio eliminado",
+    "form": {
+      "name": "Nombre",
+      "category": "Categoría",
+      "icon": "Icono",
+      "price": "Desde",
+      "weeks": "Semanas",
+      "summary": "Resumen",
+      "description": "Descripción",
+      "deliverables": "Entregables",
+      "deliverablesHint": "Uno por línea."
+    }
+  },
+  "testimonials": {
+    "title": "Testimonios",
+    "subtitle": "Solo los aprobados aparecen en el sitio.",
+    "new": "Nuevo testimonio",
+    "newTitle": "Nuevo testimonio",
+    "editTitle": "Editar testimonio",
+    "approved": "Aprobado",
+    "pending": "Pendiente",
+    "approve": "Aprobar",
+    "unapprove": "Quitar del sitio",
+    "approvedMsg": "Testimonio aprobado",
+    "unapproved": "Testimonio quitado del sitio",
+    "created": "Testimonio creado",
+    "updated": "Testimonio actualizado",
+    "removed": "Testimonio eliminado",
+    "linkedCase": "Caso",
+    "emptyTitle": "Ningún testimonio",
+    "emptyDesc": "Pide uno al final del próximo proyecto.",
+    "filters": {
+      "all": "Todos",
+      "approved": "Aprobados",
+      "pending": "Pendientes"
+    },
+    "form": {
+      "author": "Nombre",
+      "role": "Cargo",
+      "company": "Empresa",
+      "rating": "Nota",
+      "case": "Caso relacionado",
+      "noCase": "Ninguno",
+      "quote": "Testimonio"
+    }
+  },
+  "settings": {
+    "title": "Ajustes",
+    "subtitle": "Ajusta tu perfil, los datos del estudio y las preferencias.",
+    "tabs": {
+      "profile": "Perfil",
+      "studio": "Estudio",
+      "notifications": "Notificaciones"
+    },
+    "profile": {
+      "title": "Datos del perfil",
+      "name": "Nombre",
+      "email": "Correo",
+      "role": "Función",
+      "saved": "Perfil actualizado"
+    },
+    "studio": {
+      "title": "Datos del estudio",
+      "name": "Nombre del estudio",
+      "cnpj": "NIF",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "saved": "Estudio actualizado"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "newLead": "Avisar de nuevos leads",
+      "newLeadDesc": "Recibe un aviso cuando alguien envíe el briefing.",
+      "proposalAccepted": "Propuesta aceptada",
+      "proposalAcceptedDesc": "Aviso cuando un cliente acepte una propuesta.",
+      "weeklySummary": "Resumen semanal",
+      "weeklySummaryDesc": "Un resumen del embudo cada lunes por la mañana."
+    },
+    "saved": "Preferencia guardada"
+  },
+  "cookie": {
+    "title": "Usamos cookies",
+    "desc": "Usamos cookies para mejorar tu experiencia.",
+    "policy": "Política de privacidad",
+    "accept": "Aceptar",
+    "decline": "Rechazar"
+  },
+  "notFound": {
+    "title": "Página no encontrada",
+    "desc": "La página que buscas no existe o se ha movido.",
+    "back": "Volver al panel",
+    "home": "Ir al inicio"
+  }
+}

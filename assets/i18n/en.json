@@ -1,0 +1,551 @@
+{
+  "brand": "Norte Studio",
+  "common": {
+    "search": "Search",
+    "noResults": "No results",
+    "previous": "Previous",
+    "next": "Next",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "edit": "Edit",
+    "remove": "Remove",
+    "add": "Add",
+    "all": "All",
+    "theme": "Theme",
+    "loading": "Loading",
+    "actions": "Actions",
+    "status": "Status",
+    "viewAll": "View all",
+    "viewCase": "View case",
+    "optional": "optional"
+  },
+  "nav": {
+    "cases": "Work",
+    "services": "Services",
+    "about": "About",
+    "contact": "Contact",
+    "brief": "Start a brief",
+    "login": "Sign in",
+    "dashboard": "Dashboard"
+  },
+  "appNav": {
+    "commercial": "Sales",
+    "content": "Content",
+    "settingsSection": "Account",
+    "dashboard": "Overview",
+    "leads": "Leads",
+    "proposals": "Proposals",
+    "cases": "Case studies",
+    "services": "Services",
+    "testimonials": "Testimonials",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "collapse": "Collapse menu",
+    "logout": "Sign out",
+    "proTitle": "Sales pipeline",
+    "proDesc": "Track the leads from the brief",
+    "openLeads": "Open leads"
+  },
+  "notifications": {
+    "newLead": "New lead: {{name}}",
+    "proposalAccepted": "Proposal {{name}} accepted",
+    "casePublished": "Case published: {{name}}"
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "loginSubtitle": "Access the studio leads, proposals and portfolio.",
+    "registerTitle": "Create account",
+    "registerSubtitle": "Start organising your studio pipeline.",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "studio": "Studio",
+    "remember": "Keep me signed in",
+    "forgot": "Forgot password",
+    "loginCta": "Sign in",
+    "registerCta": "Create account",
+    "loggingIn": "Signing in…",
+    "noAccount": "No account yet?",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Sign in",
+    "loginError": "Enter an email and a password.",
+    "loginSuccess": "Welcome back",
+    "registerSuccess": "Account created",
+    "demoTitle": "Demo account",
+    "demoHint": "Mock authentication: any email and password will sign you in.",
+    "terms": "I accept the terms of use and the privacy policy."
+  },
+  "validation": {
+    "required": "Required field",
+    "email": "Invalid email",
+    "min": "Write at least {{count}} characters"
+  },
+  "serviceCategories": {
+    "branding": "Brand",
+    "web": "Web",
+    "produto": "Product",
+    "marketing": "Marketing",
+    "motion": "Motion"
+  },
+  "caseCategories": {
+    "branding": "Brand",
+    "web": "Website",
+    "app": "App",
+    "ecommerce": "E-commerce",
+    "campanha": "Campaign"
+  },
+  "leadStages": {
+    "novo": "New",
+    "contato": "In touch",
+    "proposta": "Proposal",
+    "ganho": "Won",
+    "perdido": "Lost"
+  },
+  "leadSources": {
+    "site": "Website",
+    "briefing": "Brief",
+    "indicacao": "Referral",
+    "social": "Social"
+  },
+  "proposalStatuses": {
+    "rascunho": "Draft",
+    "enviada": "Sent",
+    "aceita": "Accepted",
+    "recusada": "Declined"
+  },
+  "process": {
+    "s1": {
+      "title": "Discovery",
+      "desc": "Interviews, data and an honest read of the problem before proposing anything."
+    },
+    "s2": {
+      "title": "Strategy",
+      "desc": "Scope, priorities and the success criteria written together with you."
+    },
+    "s3": {
+      "title": "Design",
+      "desc": "Short cycles with something navigable, reviewed and adjusted every week."
+    },
+    "s4": {
+      "title": "Delivery",
+      "desc": "Implementation, testing and the handover to the team that runs it daily."
+    },
+    "s5": {
+      "title": "Measurement",
+      "desc": "We follow the agreed numbers for 90 days after launch."
+    }
+  },
+  "faq": {
+    "q1": {
+      "q": "How long does a project take?",
+      "a": "It depends on scope. A visual identity usually takes six weeks; a digital product, two to three months. Each service lists its typical timeline on the services page."
+    },
+    "q2": {
+      "q": "How does payment work?",
+      "a": "Thirty percent on signature, the rest split across the agreed deliveries. Projects longer than three months can be billed monthly."
+    },
+    "q3": {
+      "q": "Do you work with the client's in-house team?",
+      "a": "Yes, and we prefer it. Our job is to deliver the project and leave the team able to carry on without us."
+    },
+    "q4": {
+      "q": "Who keeps the source files?",
+      "a": "You do. Every editable file, the code repository and the accounts we used are handed over at the end of the project."
+    },
+    "q5": {
+      "q": "Do you offer maintenance after delivery?",
+      "a": "We offer an optional monthly contract for evolution and support. It is not required to receive the project."
+    }
+  },
+  "home": {
+    "hero": {
+      "badge": "Taking projects for next quarter",
+      "title": "Brand, product and web for companies that need to move",
+      "subtitle": "A 14-person studio working in short cycles, with written scope and measured results. No 80-slide deck.",
+      "cta": "Request a quote",
+      "secondary": "See the work"
+    },
+    "stats": {
+      "projects": "Projects delivered",
+      "years": "Years running",
+      "clients": "Active clients",
+      "rating": "Average client rating"
+    },
+    "services": {
+      "eyebrow": "What we do",
+      "title": "Services",
+      "subtitle": "Every project starts from a business question, not from a visual reference."
+    },
+    "cases": {
+      "eyebrow": "Recent work",
+      "title": "Selected cases",
+      "all": "See all cases"
+    },
+    "process": {
+      "eyebrow": "How we work",
+      "title": "Five stages, no surprises halfway through",
+      "subtitle": "The same process on every project, from rebranding to app. What changes is how deep each stage goes."
+    },
+    "testimonials": {
+      "title": "What clients say"
+    },
+    "clients": {
+      "title": "Companies that trusted the studio"
+    },
+    "cta": {
+      "title": "Tell us what you need to solve",
+      "subtitle": "Answer the four-step brief and we come back with a proposal within three business days.",
+      "button": "Start the brief"
+    },
+    "footer": {
+      "tagline": "Brand, product and web studio. We work with written scope and measured results.",
+      "rights": "All rights reserved."
+    }
+  },
+  "landing": {
+    "footer": {
+      "tagline": "Brand, product and web studio. We work with written scope and measured results.",
+      "rights": "All rights reserved.",
+      "docs": "Services",
+      "help": "Help",
+      "privacy": "Privacy"
+    }
+  },
+  "cases": {
+    "eyebrow": "Portfolio",
+    "title": "Case studies",
+    "subtitle": "Published projects with the problem, the solution and the number that moved.",
+    "searchPlaceholder": "Search by client, project or tag",
+    "count": "{{count}} projects",
+    "emptyTitle": "Nothing found",
+    "emptyDesc": "Try another category or clear the search.",
+    "notFoundTitle": "Case not found",
+    "notFoundDesc": "This project may have been unpublished.",
+    "backToList": "Back to the cases"
+  },
+  "caseDetail": {
+    "client": "Client",
+    "year": "Year",
+    "services": "Services",
+    "challenge": "The challenge",
+    "solution": "What we did",
+    "results": "Results",
+    "next": "Next case",
+    "related": "Related projects",
+    "ctaTitle": "Want a similar result?"
+  },
+  "services": {
+    "eyebrow": "Services",
+    "title": "What the studio does",
+    "subtitle": "Pick by problem, not by deliverable. If you are unsure, the brief helps you decide.",
+    "priceFrom": "From",
+    "weeks": "{{count}} weeks",
+    "request": "Request a quote",
+    "faqTitle": "Frequently asked questions",
+    "ctaTitle": "Not sure where to start?",
+    "ctaSubtitle": "Answer the brief and we suggest the scope."
+  },
+  "about": {
+    "eyebrow": "About",
+    "title": "A small studio, on purpose",
+    "p1": "We started in 2012 as two designers taking on brand projects. Today we are 14 people across design, strategy and engineering, and we stay small because that is how we get to be present in every project.",
+    "p2": "There is no new business department here. The person you meet in the first call is the person who will run the work.",
+    "valuesTitle": "How we work",
+    "values": {
+      "v1": {
+        "title": "Research before pixels",
+        "desc": "No screen gets drawn before we understand who uses it and why."
+      },
+      "v2": {
+        "title": "Inside your team",
+        "desc": "We work within your team, with access to the same tools."
+      },
+      "v3": {
+        "title": "An agreed number",
+        "desc": "Every project has a success criterion defined at the start."
+      },
+      "v4": {
+        "title": "You keep everything",
+        "desc": "Files, code and accounts are handed to the client."
+      }
+    },
+    "teamTitle": "Who does the work",
+    "teamSubtitle": "Four of the fourteen people in the studio, and the ones you meet in the calls.",
+    "timelineTitle": "Timeline",
+    "timeline": {
+      "t1": "Two designers, a borrowed room and the first five clients.",
+      "t2": "First digital product project and the arrival of the engineering team.",
+      "t3": "Remote by choice, with people in four states.",
+      "t4": "One hundred projects delivered and the first continuous-improvement contract.",
+      "t5": "Fourteen people, three verticals and a two-month waiting list."
+    },
+    "cta": "Talk to the studio"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Let's talk",
+    "subtitle": "We reply within one business day. If you prefer, answer the brief to speed up the proposal.",
+    "channels": {
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "hours": "Opening hours"
+    },
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "company": "Company",
+      "phone": "Phone",
+      "service": "Service of interest",
+      "servicePlaceholder": "Select (optional)",
+      "message": "Message",
+      "messagePlaceholder": "Tell us the context and what you need to solve.",
+      "submit": "Send message"
+    },
+    "success": "Message sent. We will get in touch shortly.",
+    "mapPlaceholder": "Office map"
+  },
+  "brief": {
+    "eyebrow": "Brief",
+    "title": "Request a quote",
+    "subtitle": "Four steps, about three minutes. We come back with a proposal within three business days.",
+    "steps": {
+      "scope": "Scope",
+      "budget": "Budget",
+      "contact": "Contact",
+      "review": "Review"
+    },
+    "scope": {
+      "title": "What do you need?",
+      "desc": "Tick everything that applies. You can adjust it later."
+    },
+    "budget": {
+      "title": "Budget range",
+      "desc": "This sizes the scope, it does not lock a price now."
+    },
+    "deadline": {
+      "title": "Target timeline"
+    },
+    "contact": {
+      "title": "How we reach you",
+      "desc": "Only the name and the email are required.",
+      "details": "Project details",
+      "detailsPlaceholder": "Context, references, constraints, what has been tried."
+    },
+    "review": {
+      "title": "Check before sending",
+      "desc": "You can go back to any step to adjust.",
+      "scope": "Scope",
+      "budget": "Budget",
+      "deadline": "Timeline",
+      "contact": "Contact"
+    },
+    "submit": "Send the brief",
+    "success": "Brief sent",
+    "doneTitle": "We received your brief",
+    "doneDesc": "We will read it carefully and come back with a proposal within three business days.",
+    "doneCases": "See the cases",
+    "doneAgain": "Send another brief"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "subtitle": "How the studio pipeline is doing this month.",
+    "newProposal": "New proposal",
+    "kpi": {
+      "leads": "Leads this month",
+      "leadsHint": "From the website and the brief",
+      "openProposals": "Open proposals",
+      "winRate": "Win rate",
+      "winRateHint": "Accepted over decided",
+      "revenue": "Closed revenue",
+      "revenueHint": "Sum of accepted proposals"
+    },
+    "charts": {
+      "revenue": "Revenue per month",
+      "revenueSeries": "Revenue",
+      "leads": "Leads per month",
+      "leadsSeries": "Leads",
+      "lastMonths": "Last {{count}} months"
+    },
+    "funnel": {
+      "title": "Funnel by stage"
+    },
+    "byService": {
+      "title": "Revenue by service",
+      "empty": "No accepted proposal yet."
+    },
+    "latestLeads": "Latest leads",
+    "openProposals": "Proposals awaiting an answer",
+    "noOpenProposals": "No proposal is waiting for a reply.",
+    "caseCount": "{{count}} cases published on the website."
+  },
+  "leads": {
+    "title": "Leads",
+    "subtitle": "Drag a card between columns to change its stage.",
+    "searchPlaceholder": "Search by name, company or email",
+    "count": "{{count}} leads",
+    "emptyColumn": "Nothing here",
+    "moved": "Lead moved to {{stage}}",
+    "convert": "Create proposal",
+    "converted": "Proposal created as a draft",
+    "proposalTitle": "Proposal for {{name}}",
+    "removed": "Lead removed",
+    "changeStage": "Change stage"
+  },
+  "proposals": {
+    "title": "Proposals",
+    "subtitle": "Items, discount and status of every proposal sent.",
+    "new": "New proposal",
+    "newTitle": "Untitled proposal",
+    "newItem": "New item",
+    "code": "Code",
+    "client": "Client",
+    "titleColumn": "Title",
+    "validUntil": "Valid until",
+    "item": "Item",
+    "qty": "Qty",
+    "unitPrice": "Unit price",
+    "lineTotal": "Total",
+    "addItem": "Add item",
+    "noItems": "No item in this proposal.",
+    "subtotal": "Subtotal",
+    "discount": "Discount (%)",
+    "total": "Total",
+    "expired": "Expired",
+    "statusChanged": "Status changed to {{status}}",
+    "removed": "Proposal removed",
+    "emptyTitle": "No proposals",
+    "emptyDesc": "Create a proposal or convert a lead."
+  },
+  "casesAdmin": {
+    "title": "Case studies",
+    "subtitle": "What shows up in the website portfolio.",
+    "new": "New case",
+    "newTitle": "New case",
+    "editTitle": "Edit case",
+    "published": "Published",
+    "draft": "Draft",
+    "featured": "Featured",
+    "publishedLabel": "Publish on the website",
+    "featuredLabel": "Show as featured",
+    "created": "Case created",
+    "updated": "Case updated",
+    "removed": "Case removed",
+    "emptyTitle": "No cases",
+    "emptyDesc": "Add the first project to the portfolio.",
+    "form": {
+      "title": "Title",
+      "client": "Client",
+      "year": "Year",
+      "category": "Category",
+      "tags": "Tags (comma separated)",
+      "summary": "Summary",
+      "challenge": "The challenge",
+      "solution": "What we did"
+    }
+  },
+  "servicesAdmin": {
+    "title": "Services",
+    "subtitle": "What the studio offers and what it costs.",
+    "new": "New service",
+    "newTitle": "New service",
+    "editTitle": "Edit service",
+    "created": "Service created",
+    "updated": "Service updated",
+    "removed": "Service removed",
+    "form": {
+      "name": "Name",
+      "category": "Category",
+      "icon": "Icon",
+      "price": "Starting at",
+      "weeks": "Weeks",
+      "summary": "Summary",
+      "description": "Description",
+      "deliverables": "Deliverables",
+      "deliverablesHint": "One per line."
+    }
+  },
+  "testimonials": {
+    "title": "Testimonials",
+    "subtitle": "Only approved ones show on the website.",
+    "new": "New testimonial",
+    "newTitle": "New testimonial",
+    "editTitle": "Edit testimonial",
+    "approved": "Approved",
+    "pending": "Pending",
+    "approve": "Approve",
+    "unapprove": "Take off the site",
+    "approvedMsg": "Testimonial approved",
+    "unapproved": "Testimonial removed from the site",
+    "created": "Testimonial created",
+    "updated": "Testimonial updated",
+    "removed": "Testimonial removed",
+    "linkedCase": "Case",
+    "emptyTitle": "No testimonials",
+    "emptyDesc": "Ask for one at the end of the next project.",
+    "filters": {
+      "all": "All",
+      "approved": "Approved",
+      "pending": "Pending"
+    },
+    "form": {
+      "author": "Name",
+      "role": "Role",
+      "company": "Company",
+      "rating": "Rating",
+      "case": "Related case",
+      "noCase": "None",
+      "quote": "Testimonial"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Adjust your profile, the studio details and the preferences.",
+    "tabs": {
+      "profile": "Profile",
+      "studio": "Studio",
+      "notifications": "Notifications"
+    },
+    "profile": {
+      "title": "Profile details",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "saved": "Profile updated"
+    },
+    "studio": {
+      "title": "Studio details",
+      "name": "Studio name",
+      "cnpj": "Tax ID",
+      "phone": "Phone",
+      "address": "Address",
+      "saved": "Studio updated"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "newLead": "Notify me about new leads",
+      "newLeadDesc": "Get a notice when someone submits the brief.",
+      "proposalAccepted": "Proposal accepted",
+      "proposalAcceptedDesc": "Notice when a client accepts a proposal.",
+      "weeklySummary": "Weekly summary",
+      "weeklySummaryDesc": "A pipeline summary every Monday morning."
+    },
+    "saved": "Preference saved"
+  },
+  "cookie": {
+    "title": "We use cookies",
+    "desc": "We use cookies to improve your experience.",
+    "policy": "Privacy policy",
+    "accept": "Accept",
+    "decline": "Decline"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "desc": "The page you are looking for does not exist or has moved.",
+    "back": "Back to the dashboard",
+    "home": "Go to the homepage"
+  }
+}

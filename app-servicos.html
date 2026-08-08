@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Serviços — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="app" data-guard="true">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    const CATEGORIES = ['branding', 'web', 'produto', 'marketing', 'motion'];
+    const ICONS = ['sparkles', 'globe', 'layers', 'shopping-bag', 'rocket', 'zap', 'chart', 'briefcase'];
+    let editingId = null;
+
+    function formBody(service) {
+      const t = UI.t, esc = UI.esc;
+      const input = 'h-10 w-full rounded-lg border border-themed bg-transparent px-3 text-sm text-body focus-ring';
+      const area = 'focus-ring w-full rounded-lg border border-themed bg-transparent px-3 py-2 text-sm text-body';
+      const s = service || { name: '', category: 'branding', summary: '', description: '', deliverables: [], priceFrom: 0, weeks: 4, icon: 'sparkles' };
+
+      const catOptions = CATEGORIES.map((c) =>
+        '<option value="' + c + '"' + (s.category === c ? ' selected' : '') + '>' + t('serviceCategories.' + c) + '</option>'
+      ).join('');
+      const iconOptions = ICONS.map((i) =>
+        '<option value="' + i + '"' + (s.icon === i ? ' selected' : '') + '>' + i + '</option>'
+      ).join('');
+
+      return '<div class="grid gap-4 sm:grid-cols-2">' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('servicesAdmin.form.name') + '</span>' +
+        '<input data-f="name" value="' + esc(s.name) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('servicesAdmin.form.category') + '</span>' +
+        '<select data-f="category" class="' + input + '">' + catOptions + '</select></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('servicesAdmin.form.icon') + '</span>' +
+        '<select data-f="icon" class="' + input + '">' + iconOptions + '</select></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('servicesAdmin.form.price') + '</span>' +
+        '<input data-f="priceFrom" type="number" min="0" step="500" value="' + s.priceFrom + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('servicesAdmin.form.weeks') + '</span>' +
+        '<input data-f="weeks" type="number" min="1" value="' + s.weeks + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('servicesAdmin.form.summary') + '</span>' +
+        '<input data-f="summary" value="' + esc(s.summary) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('servicesAdmin.form.description') + '</span>' +
+        '<textarea data-f="description" rows="3" class="' + area + '">' + esc(s.description) + '</textarea></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('servicesAdmin.form.deliverables') + '</span>' +
+        '<textarea data-f="deliverables" rows="5" class="' + area + '">' + esc(s.deliverables.join('\n')) + '</textarea>' +
+        '<span class="block text-xs text-muted">' + t('servicesAdmin.form.deliverablesHint') + '</span></label>' +
+        '</div>';
+    }
+
+    function readForm() {
+      const val = (name) => {
+        const el = document.querySelector('#service-modal [data-f="' + name + '"]');
+        return el ? el.value : '';
+      };
+      return {
+        name: val('name').trim(),
+        category: val('category'),
+        icon: val('icon'),
+        priceFrom: Number(val('priceFrom')) || 0,
+        weeks: Number(val('weeks')) || 1,
+        summary: val('summary'),
+        description: val('description'),
+        deliverables: val('deliverables').split('\n').map((s) => s.trim()).filter(Boolean),
+      };
+    }
+
+    function save() {
+      const t = UI.t;
+      const form = readForm();
+      if (!form.name) return;
+
+      if (editingId != null) {
+        PF.updateService(editingId, Object.assign({}, form, { slug: PF.slugify(form.name) }));
+        UI.notify(t('servicesAdmin.updated'), 'success');
+      } else {
+        PF.addService(Object.assign({}, form, { slug: PF.slugify(form.name) || 'servico-' + Date.now(), active: true }));
+        UI.notify(t('servicesAdmin.created'), 'success');
+      }
+      UI.closeModal('service-modal');
+      window.renderPage();
+    }
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc;
+      const services = PF.get().services;
+      const editing = editingId != null ? Query.serviceById(services, editingId) : null;
+
+      const rows = services.length
+        ? services.map((service) =>
+            '<tr>' +
+            '<td class="px-5 py-3"><div class="flex items-center gap-3">' +
+            '<span class="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-50 text-brand-500 dark:bg-brand-500/15">' + icon(service.icon, { size: 17 }) + '</span>' +
+            '<div class="min-w-0"><p class="truncate font-medium text-heading">' + esc(service.name) + '</p>' +
+            '<p class="truncate text-xs text-muted">' + esc(service.summary) + '</p></div></div></td>' +
+            '<td class="px-5 py-3">' + UI.badge(t('serviceCategories.' + service.category), 'gray') + '</td>' +
+            '<td class="px-5 py-3 text-body">' + UI.fmt(service.priceFrom) + '</td>' +
+            '<td class="px-5 py-3 text-muted">' + t('services.weeks', { count: service.weeks }) + '</td>' +
+            '<td class="px-5 py-3">' + UI.switchToggle(service.active, 'data-toggle="' + service.id + '"', 'sm') + '</td>' +
+            '<td class="px-5 py-3"><div class="flex justify-end gap-1">' +
+            '<button type="button" data-edit="' + service.id + '" aria-label="' + esc(t('common.edit')) + '" class="flex h-9 w-9 items-center justify-center rounded-lg text-muted transition hover:text-brand-500">' + icon('edit', { size: 16 }) + '</button>' +
+            '<button type="button" data-remove="' + service.id + '" aria-label="' + esc(t('common.remove')) + '" class="flex h-9 w-9 items-center justify-center rounded-lg text-muted transition hover:text-error-500">' + icon('trash', { size: 16 }) + '</button>' +
+            '</div></td></tr>'
+          ).join('')
+        : '<tr><td colspan="6" class="px-5 py-12 text-center text-sm text-muted">' + t('common.noResults') + '</td></tr>';
+
+      document.getElementById('page').innerHTML =
+        UI.pageHeader({
+          title: t('servicesAdmin.title'),
+          subtitle: t('servicesAdmin.subtitle'),
+          action: '<button type="button" data-new class="inline-flex h-10 items-center gap-2 rounded-lg bg-brand-500 px-4 text-sm font-medium text-white transition hover:bg-brand-600">' +
+            icon('plus', { size: 16 }) + t('servicesAdmin.new') + '</button>',
+        }) +
+        '<div class="overflow-x-auto rounded-2xl border border-themed surface-card shadow-theme-sm">' +
+        '<table class="w-full min-w-[720px] text-sm"><thead>' +
+        '<tr class="border-b border-themed text-left text-xs uppercase tracking-wider text-muted">' +
+        '<th class="px-5 py-3 font-medium">' + t('servicesAdmin.form.name') + '</th>' +
+        '<th class="px-5 py-3 font-medium">' + t('servicesAdmin.form.category') + '</th>' +
+        '<th class="px-5 py-3 font-medium">' + t('servicesAdmin.form.price') + '</th>' +
+        '<th class="px-5 py-3 font-medium">' + t('servicesAdmin.form.weeks') + '</th>' +
+        '<th class="px-5 py-3 font-medium">' + t('common.status') + '</th>' +
+        '<th class="w-28 px-5 py-3"></th></tr></thead>' +
+        '<tbody class="divide-y divide-[color:var(--tx-border)]">' + rows + '</tbody></table></div>' +
+        UI.modal('service-modal', {
+          title: editing ? t('servicesAdmin.editTitle') : t('servicesAdmin.newTitle'),
+          size: 'lg',
+          body: formBody(editing),
+          footer:
+            '<button type="button" data-modal-close class="h-10 rounded-lg border border-themed px-4 text-sm font-medium text-body">' + t('common.cancel') + '</button>' +
+            '<button type="button" data-save class="h-10 rounded-lg bg-brand-500 px-5 text-sm font-medium text-white">' + t('common.save') + '</button>',
+        });
+
+      document.querySelectorAll('[data-toggle]').forEach((el) =>
+        el.addEventListener('click', () => { PF.toggleServiceActive(Number(el.getAttribute('data-toggle'))); window.renderPage(); })
+      );
+      document.querySelectorAll('[data-edit]').forEach((el) =>
+        el.addEventListener('click', () => { editingId = Number(el.getAttribute('data-edit')); window.renderPage(); UI.openModal('service-modal'); })
+      );
+      document.querySelectorAll('[data-remove]').forEach((el) =>
+        el.addEventListener('click', () => {
+          PF.removeService(Number(el.getAttribute('data-remove')));
+          window.renderPage();
+          UI.notify(UI.t('servicesAdmin.removed'), 'success');
+        })
+      );
+      const newBtn = document.querySelector('[data-new]');
+      if (newBtn) newBtn.addEventListener('click', () => { editingId = null; window.renderPage(); UI.openModal('service-modal'); });
+      const saveBtn = document.querySelector('[data-save]');
+      if (saveBtn) saveBtn.addEventListener('click', save);
+      document.querySelectorAll('#service-modal [data-modal-close]').forEach((el) =>
+        el.addEventListener('click', () => { editingId = null; })
+      );
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

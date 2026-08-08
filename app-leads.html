@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Leads — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="app" data-guard="true">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    const SOURCES = ['all', 'site', 'briefing', 'indicacao', 'social'];
+
+    let search = '';
+    let source = 'all';
+    let selectedId = null;
+
+    function detailBody(lead) {
+      const t = UI.t, esc = UI.esc;
+      const services = PF.get().services;
+
+      const rows = [
+        ['contact.form.name', lead.name],
+        ['contact.form.email', lead.email],
+        ['contact.form.phone', lead.phone || '—'],
+        ['contact.form.company', lead.company || '—'],
+        ['brief.review.budget', lead.budget || '—'],
+        ['brief.review.deadline', lead.deadline || '—'],
+      ].map(([key, value]) =>
+        '<div class="flex justify-between gap-3 px-4 py-2.5"><dt class="text-muted">' + t(key) + '</dt>' +
+        '<dd class="text-right font-medium text-heading">' + esc(value) + '</dd></div>'
+      ).join('');
+
+      const scope = lead.scope.length
+        ? '<div><p class="text-xs uppercase tracking-wider text-muted">' + t('brief.review.scope') + '</p>' +
+          '<div class="mt-2 flex flex-wrap gap-1.5">' +
+          lead.scope.map((slug) => {
+            const s = Query.serviceBySlug(services, slug);
+            return UI.badge(esc(s ? s.name : slug), 'brand');
+          }).join('') + '</div></div>'
+        : '';
+
+      const message = lead.message
+        ? '<div><p class="text-xs uppercase tracking-wider text-muted">' + t('contact.form.message') + '</p>' +
+          '<p class="mt-2 rounded-xl border border-themed p-3 leading-relaxed text-body">' + esc(lead.message) + '</p></div>'
+        : '';
+
+      const stages =
+        '<div><p class="text-xs uppercase tracking-wider text-muted">' + t('leads.changeStage') + '</p>' +
+        '<div class="mt-2 flex flex-wrap gap-2">' +
+        Query.LEAD_STAGES.map((stage) =>
+          '<button type="button" data-set-stage="' + stage + '" class="h-9 rounded-lg px-3 text-xs font-medium transition ' +
+          (lead.stage === stage ? 'bg-brand-500 text-white' : 'border border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' +
+          t('leadStages.' + stage) + '</button>'
+        ).join('') + '</div></div>';
+
+      return '<div class="space-y-5 text-sm">' +
+        '<div class="flex flex-wrap gap-2">' + UI.stagePill(lead.stage) + UI.badge(t('leadSources.' + lead.source), 'gray') + '</div>' +
+        '<dl class="divide-y divide-[color:var(--tx-border)] rounded-xl border border-themed">' + rows + '</dl>' +
+        scope + message + stages + '</div>';
+    }
+
+    function detailFooter() {
+      const t = UI.t, icon = UI.icon;
+      return '<div class="flex flex-wrap gap-2">' +
+        '<button type="button" data-convert class="inline-flex h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-brand-500 px-4 text-sm font-medium text-white transition hover:bg-brand-600">' +
+        icon('file-text', { size: 16 }) + t('leads.convert') + '</button>' +
+        '<button type="button" data-remove class="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-themed px-4 text-sm font-medium text-error-500 transition hover:bg-error-50 dark:hover:bg-error-500/10">' +
+        icon('trash', { size: 16 }) + t('common.remove') + '</button></div>';
+    }
+
+    function convert(lead) {
+      const t = UI.t;
+      const services = PF.get().services;
+      const items = lead.scope
+        .map((slug) => Query.serviceBySlug(services, slug))
+        .filter(Boolean)
+        .map((s) => ({ description: s.name, qty: 1, price: s.priceFrom }));
+
+      PF.addProposal({
+        leadId: lead.id,
+        client: lead.company || lead.name,
+        title: t('leads.proposalTitle', { name: lead.company || lead.name }),
+        items: items.length > 0 ? items : [{ description: t('proposals.newItem'), qty: 1, price: 0 }],
+        discount: 0,
+        status: 'rascunho',
+        validUntil: new Date(Date.now() + 30 * 864e5).toISOString().slice(0, 10),
+      });
+      PF.moveLeadStage(lead.id, 'proposta');
+      selectedId = null;
+      window.renderPage();
+      UI.notify(t('leads.converted'), 'success');
+    }
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc;
+      const visible = Query.filterLeads(PF.get().leads, { search: search, source: source });
+
+      const chips = SOURCES.map((s) =>
+        '<button type="button" data-source="' + s + '" class="h-9 rounded-lg px-3 text-sm font-medium transition ' +
+        (source === s ? 'bg-brand-500 text-white' : 'border border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' +
+        (s === 'all' ? t('common.all') : t('leadSources.' + s)) + '</button>'
+      ).join('');
+
+      const board = Query.LEAD_STAGES.map((stage) => {
+        const rows = visible.filter((l) => l.stage === stage);
+        const cards = rows.length
+          ? rows.map((lead) => UI.leadCard(lead)).join('')
+          : '<p class="rounded-xl border border-dashed border-themed py-6 text-center text-xs text-muted">' + t('leads.emptyColumn') + '</p>';
+        return '<section data-stage="' + stage + '" class="flex flex-col rounded-2xl border border-themed bg-gray-50/60 p-3 transition dark:bg-gray-900/30">' +
+          '<header class="mb-3 flex items-center justify-between gap-2">' + UI.stagePill(stage) +
+          '<span class="text-xs font-medium text-muted">' + rows.length + '</span></header>' +
+          '<div class="flex flex-col gap-3">' + cards + '</div></section>';
+      }).join('');
+
+      const selected = selectedId != null ? Query.leadById(PF.get().leads, selectedId) : null;
+
+      document.getElementById('page').innerHTML =
+        '<div class="flex h-full flex-col">' +
+        UI.pageHeader({ title: t('leads.title'), subtitle: t('leads.subtitle') }) +
+        '<div class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">' +
+        '<label class="relative w-full lg:max-w-xs">' +
+        '<span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">' + icon('search', { size: 18 }) + '</span>' +
+        '<input data-search type="search" value="' + esc(search) + '" placeholder="' + esc(t('leads.searchPlaceholder')) + '" class="h-10 w-full rounded-lg border border-themed bg-transparent pl-10 pr-3 text-sm text-body focus-ring"/>' +
+        '</label>' +
+        '<div class="flex flex-wrap gap-2">' + chips + '</div>' +
+        '<span class="text-sm text-muted lg:ml-auto">' + t('leads.count', { count: visible.length }) + '</span>' +
+        '</div>' +
+        '<div class="flex-1 overflow-x-auto pb-2"><div class="grid min-w-[900px] grid-cols-5 gap-4">' + board + '</div></div>' +
+        UI.drawer('lead-drawer', {
+          title: selected ? esc(selected.company || selected.name) : '',
+          subtitle: selected ? UI.fmtDateTime(selected.createdAt) : '',
+          body: selected ? detailBody(selected) : '',
+          footer: selected ? detailFooter() : '',
+          width: 'max-w-lg',
+        }) +
+        '</div>';
+
+      if (selected) UI.openDrawer('lead-drawer');
+
+      // ---- filters ----
+      document.querySelectorAll('[data-source]').forEach((el) =>
+        el.addEventListener('click', () => { source = el.getAttribute('data-source'); window.renderPage(); })
+      );
+      const input = document.querySelector('[data-search]');
+      if (input) {
+        input.addEventListener('input', () => {
+          search = input.value;
+          window.renderPage();
+          const next = document.querySelector('[data-search]');
+          if (next) { next.focus(); next.setSelectionRange(next.value.length, next.value.length); }
+        });
+      }
+
+      // ---- drag and drop between stage columns ----
+      document.querySelectorAll('[data-lead]').forEach((el) => {
+        el.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', el.getAttribute('data-lead'));
+          e.dataTransfer.effectAllowed = 'move';
+        });
+        el.addEventListener('click', () => {
+          selectedId = Number(el.getAttribute('data-lead'));
+          window.renderPage();
+        });
+      });
+
+      document.querySelectorAll('[data-stage]').forEach((col) => {
+        col.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          col.classList.add('border-brand-500', 'bg-brand-50/60', 'dark:bg-brand-500/10');
+        });
+        col.addEventListener('dragleave', () => {
+          col.classList.remove('border-brand-500', 'bg-brand-50/60', 'dark:bg-brand-500/10');
+        });
+        col.addEventListener('drop', (e) => {
+          e.preventDefault();
+          col.classList.remove('border-brand-500', 'bg-brand-50/60', 'dark:bg-brand-500/10');
+          const id = Number(e.dataTransfer.getData('text/plain'));
+          if (!id) return;
+          const stage = col.getAttribute('data-stage');
+          PF.moveLeadStage(id, stage);
+          window.renderPage();
+          UI.notify(UI.t('leads.moved', { stage: UI.t('leadStages.' + stage) }), 'success');
+        });
+      });
+
+      // ---- drawer actions ----
+      document.querySelectorAll('#lead-drawer [data-drawer-close]').forEach((el) =>
+        el.addEventListener('click', () => { selectedId = null; })
+      );
+      document.querySelectorAll('[data-set-stage]').forEach((el) =>
+        el.addEventListener('click', () => {
+          PF.moveLeadStage(selectedId, el.getAttribute('data-set-stage'));
+          window.renderPage();
+        })
+      );
+      const convertBtn = document.querySelector('[data-convert]');
+      if (convertBtn && selected) convertBtn.addEventListener('click', () => convert(selected));
+      const removeBtn = document.querySelector('[data-remove]');
+      if (removeBtn && selected) {
+        removeBtn.addEventListener('click', () => {
+          PF.removeLead(selected.id);
+          selectedId = null;
+          window.renderPage();
+          UI.notify(UI.t('leads.removed'), 'success');
+        });
+      }
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

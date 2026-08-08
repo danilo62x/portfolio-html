@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Entrar — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="blank">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    /** Blank-layout wrapper for auth screens (login / register / password reset). */
+    function authShell(title, subtitle, inner, footer) {
+      const icon = UI.icon, t = UI.t;
+      return (
+        '<div class="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-50 via-white to-brand-100 px-4 py-10 dark:from-gray-900 dark:via-gray-dark dark:to-gray-900">' +
+        '<div class="absolute inset-0 -z-10 overflow-hidden"><div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-brand-200/40 blur-3xl dark:bg-brand-500/10"></div><div class="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-warning-100/60 blur-3xl dark:bg-brand-700/10"></div></div>' +
+        '<div class="w-full max-w-md"><div class="mb-6 flex flex-col items-center">' +
+        '<a href="index.html" class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-theme-md">' + icon('sparkles', { size: 26 }) + '</a>' +
+        '<h1 class="mt-5 text-title-sm font-bold text-heading">' + title + '</h1>' +
+        '<p class="mt-2 text-center text-sm text-muted">' + subtitle + '</p></div>' +
+        '<div class="surface-card rounded-2xl border p-6 shadow-theme-md md:p-8">' + inner + '</div>' +
+        (footer ? '<p class="mt-6 text-center text-sm text-muted">' + footer + '</p>' : '') +
+        '<p class="mt-6 text-center text-xs text-muted"><a href="index.html" class="hover:text-brand-500">← ' + t('brand') + '</a></p>' +
+        '</div></div>'
+      );
+    }
+    window.authShell = authShell;
+
+    let showPassword = false;
+    let loading = false;
+    let error = '';
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc, demo = Auth.DEMO_CREDENTIALS;
+      const field = 'h-11 w-full rounded-lg border border-themed bg-gray-50 text-sm text-body outline-none focus:border-brand-300 focus-ring dark:bg-gray-900';
+
+      const inner =
+        '<form data-login class="space-y-5">' +
+        '<div><label class="mb-2 block text-sm font-medium text-heading" for="email">' + t('auth.email') + '</label>' +
+        '<div class="relative"><span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">' + icon('mail', { size: 18 }) + '</span>' +
+        '<input id="email" name="email" type="email" required value="' + esc(demo.email) + '" placeholder="voce@agencia.com" class="' + field + ' pl-10 pr-3"/></div></div>' +
+        '<div><label class="mb-2 block text-sm font-medium text-heading" for="password">' + t('auth.password') + '</label>' +
+        '<div class="relative"><span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">' + icon('lock', { size: 18 }) + '</span>' +
+        '<input id="password" name="password" type="' + (showPassword ? 'text' : 'password') + '" required value="' + esc(demo.password) + '" placeholder="••••••••" class="' + field + ' pl-10 pr-10"/>' +
+        '<button type="button" data-toggle-password class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">' + icon(showPassword ? 'eye-off' : 'eye', { size: 18 }) + '</button></div></div>' +
+        '<div class="flex items-center justify-between text-sm">' +
+        '<label class="flex items-center gap-2 text-body"><input type="checkbox" checked class="h-4 w-4 rounded border-themed accent-brand-500"/>' + t('auth.remember') + '</label>' +
+        '<a href="esqueci-senha.html" class="font-medium text-brand-500 hover:text-brand-600">' + t('auth.forgot') + '</a></div>' +
+        '<button type="submit" ' + (loading ? 'disabled' : '') + ' class="flex h-11 w-full items-center justify-center rounded-lg bg-brand-500 text-sm font-medium text-white shadow-theme-xs transition hover:bg-brand-600 focus-ring disabled:cursor-not-allowed disabled:opacity-60">' +
+        (loading
+          ? '<span class="flex items-center gap-2"><span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>' + t('auth.loggingIn') + '</span>'
+          : t('auth.loginCta')) +
+        '</button>' +
+        (error ? '<p class="rounded-lg bg-error-50 px-4 py-2 text-center text-sm text-error-600 dark:bg-error-500/15 dark:text-error-500">' + error + '</p>' : '') +
+        '</form>' +
+        '<div class="mt-6 rounded-lg border border-dashed border-themed bg-gray-50/60 p-3 text-xs text-muted dark:bg-gray-900/40">' +
+        '<p class="font-medium text-body">' + t('auth.demoTitle') + '</p>' +
+        '<p>' + esc(demo.email) + ' / ' + esc(demo.password) + '</p>' +
+        '<p class="mt-0.5">' + t('auth.demoHint') + '</p></div>';
+
+      const footer = t('auth.noAccount') + ' <a href="registro.html" class="font-medium text-brand-500 hover:text-brand-600">' + t('auth.registerCta') + '</a>';
+
+      document.getElementById('page').innerHTML = authShell(t('auth.loginTitle'), t('auth.loginSubtitle'), inner, footer);
+
+      const toggle = document.querySelector('[data-toggle-password]');
+      if (toggle) toggle.addEventListener('click', () => { showPassword = !showPassword; window.renderPage(); });
+
+      const form = document.querySelector('[data-login]');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = form.email.value.trim();
+          const password = form.password.value;
+          error = '';
+          loading = true;
+          window.renderPage();
+          const ok = await Auth.login(email, password);
+          loading = false;
+          if (!ok) {
+            error = UI.t('auth.loginError');
+            window.renderPage();
+            return;
+          }
+          UI.notify(UI.t('auth.loginSuccess'), 'success');
+          const redirect = new URLSearchParams(window.location.search).get('redirect');
+          window.location.href = redirect || 'app.html';
+        });
+      }
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

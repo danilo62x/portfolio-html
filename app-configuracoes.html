@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Configurações — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="app" data-guard="true">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    let activeTab = 0;
+    const notifs = { newLead: true, proposalAccepted: true, weeklySummary: false };
+
+    const INPUT = 'h-11 w-full rounded-lg border border-themed bg-transparent px-3.5 text-sm text-body focus-ring';
+
+    function profileTab() {
+      const t = UI.t, esc = UI.esc;
+      const user = Auth.getUser() || {};
+      return '<form data-profile class="max-w-lg space-y-4">' +
+        '<h3 class="font-semibold text-heading">' + t('settings.profile.title') + '</h3>' +
+        '<div><label class="mb-1.5 block text-sm font-medium text-heading">' + t('settings.profile.name') + '</label>' +
+        '<input name="name" value="' + esc(user.name || '') + '" class="' + INPUT + '"/></div>' +
+        '<div><label class="mb-1.5 block text-sm font-medium text-heading">' + t('settings.profile.email') + '</label>' +
+        '<input name="email" type="email" value="' + esc(user.email || '') + '" class="' + INPUT + '"/></div>' +
+        '<div><label class="mb-1.5 block text-sm font-medium text-heading">' + t('settings.profile.role') + '</label>' +
+        '<input value="' + esc(user.role || '') + '" disabled class="' + INPUT + ' opacity-60"/></div>' +
+        '<button type="submit" class="h-11 rounded-lg bg-brand-500 px-5 text-sm font-medium text-white transition hover:bg-brand-600">' + t('common.save') + '</button>' +
+        '</form>';
+    }
+
+    function studioTab() {
+      const t = UI.t, esc = UI.esc;
+      const user = Auth.getUser() || {};
+      return '<form data-studio class="max-w-lg space-y-4">' +
+        '<h3 class="font-semibold text-heading">' + t('settings.studio.title') + '</h3>' +
+        '<div><label class="mb-1.5 block text-sm font-medium text-heading">' + t('settings.studio.name') + '</label>' +
+        '<input name="studio" value="' + esc(user.studio || 'Estúdio Norte') + '" class="' + INPUT + '"/></div>' +
+        '<div class="grid grid-cols-2 gap-4">' +
+        '<div><label class="mb-1.5 block text-sm font-medium text-heading">' + t('settings.studio.cnpj') + '</label>' +
+        '<input value="12.345.678/0001-90" class="' + INPUT + '"/></div>' +
+        '<div><label class="mb-1.5 block text-sm font-medium text-heading">' + t('settings.studio.phone') + '</label>' +
+        '<input value="+55 11 4000-1234" class="' + INPUT + '"/></div></div>' +
+        '<div><label class="mb-1.5 block text-sm font-medium text-heading">' + t('settings.studio.address') + '</label>' +
+        '<input value="Rua das Flores, 123 — Centro, São Paulo" class="' + INPUT + '"/></div>' +
+        '<button type="submit" class="h-11 rounded-lg bg-brand-500 px-5 text-sm font-medium text-white transition hover:bg-brand-600">' + t('common.save') + '</button>' +
+        '</form>';
+    }
+
+    function notificationsTab() {
+      const t = UI.t;
+      const rows = ['newLead', 'proposalAccepted', 'weeklySummary'].map((key) =>
+        '<div class="flex items-center justify-between border-b border-themed py-4 last:border-0">' +
+        '<div class="pr-4"><p class="text-sm font-medium text-heading">' + t('settings.notifications.' + key) + '</p>' +
+        '<p class="text-xs text-muted">' + t('settings.notifications.' + key + 'Desc') + '</p></div>' +
+        UI.switchToggle(notifs[key], 'data-notif="' + key + '"') + '</div>'
+      ).join('');
+      return '<div class="max-w-lg space-y-1">' +
+        '<h3 class="mb-4 font-semibold text-heading">' + t('settings.notifications.title') + '</h3>' + rows + '</div>';
+    }
+
+    function tabItems() {
+      const t = UI.t;
+      return [
+        { label: t('settings.tabs.profile'), icon: 'user', content: profileTab() },
+        { label: t('settings.tabs.studio'), icon: 'sparkles', content: studioTab() },
+        { label: t('settings.tabs.notifications'), icon: 'bell', content: notificationsTab() },
+      ];
+    }
+
+    window.onTabChange = function (index) {
+      activeTab = index;
+      window.renderPage();
+    };
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon;
+
+      document.getElementById('page').innerHTML =
+        UI.pageHeader({
+          title: t('settings.title'),
+          subtitle: t('settings.subtitle'),
+          crumbs: [{ label: t('appNav.dashboard'), href: 'app.html' }, { label: t('settings.title') }],
+        }) +
+        '<div class="surface-card rounded-2xl border p-5 md:p-6">' + UI.tabs(tabItems(), activeTab) + '</div>' +
+        '<p class="mt-4 inline-flex items-center gap-2 text-xs text-muted">' + icon('info', { size: 14 }) + ' ' + t('auth.demoHint') + '</p>';
+
+      const profile = document.querySelector('[data-profile]');
+      if (profile) {
+        profile.addEventListener('submit', (e) => {
+          e.preventDefault();
+          Auth.updateProfile({ name: profile.name.value, email: profile.email.value });
+          Layout.updateTopbar();
+          UI.notify(UI.t('settings.profile.saved'), 'success');
+        });
+      }
+
+      const studio = document.querySelector('[data-studio]');
+      if (studio) {
+        studio.addEventListener('submit', (e) => {
+          e.preventDefault();
+          Auth.updateProfile({ studio: studio.studio.value });
+          UI.notify(UI.t('settings.studio.saved'), 'success');
+        });
+      }
+
+      document.querySelectorAll('[data-notif]').forEach((el) =>
+        el.addEventListener('click', () => {
+          const key = el.getAttribute('data-notif');
+          notifs[key] = !notifs[key];
+          window.renderPage();
+          UI.notify(UI.t('settings.saved'), 'success');
+        })
+      );
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

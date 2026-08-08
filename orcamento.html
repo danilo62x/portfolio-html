@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Pedir orçamento — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="public">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    // Pré-seleciona o serviço quando a página é aberta a partir de um card.
+    (function preset() {
+      const slug = new URLSearchParams(window.location.search).get('servico');
+      if (!slug) return;
+      const draft = PF.Brief.get().draft;
+      if (!draft.scope.includes(slug) && Query.serviceBySlug(PF.get().services, slug)) PF.Brief.toggleScope(slug);
+    })();
+
+    function stepScope() {
+      const t = UI.t, icon = UI.icon, esc = UI.esc;
+      const draft = PF.Brief.get().draft;
+      const services = PF.get().services.filter((s) => s.active);
+      const cards = services.map((s) => {
+        const active = draft.scope.includes(s.slug);
+        return '<button type="button" data-scope="' + esc(s.slug) + '" class="flex items-start gap-3 rounded-xl border p-4 text-left transition ' +
+          (active ? 'border-brand-500 bg-brand-50 dark:bg-brand-500/10' : 'border-themed hover:bg-gray-50 dark:hover:bg-gray-800') + '">' +
+          '<span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border ' +
+          (active ? 'border-brand-500 bg-brand-500 text-white' : 'border-themed') + '">' +
+          (active ? icon('check', { size: 13, strokeWidth: 3 }) : '') + '</span>' +
+          '<span class="min-w-0"><span class="block text-sm font-semibold text-heading">' + esc(s.name) + '</span>' +
+          '<span class="mt-0.5 block text-xs text-muted">' + esc(s.summary) + '</span></span></button>';
+      }).join('');
+
+      return '<div><h2 class="text-lg font-bold text-heading">' + t('brief.scope.title') + '</h2>' +
+        '<p class="mt-1 text-sm text-muted">' + t('brief.scope.desc') + '</p>' +
+        '<div class="mt-6 grid gap-3 sm:grid-cols-2">' + cards + '</div></div>';
+    }
+
+    function stepBudget() {
+      const t = UI.t, esc = UI.esc;
+      const draft = PF.Brief.get().draft;
+      const budgets = Data.BUDGET_RANGES.map((b) =>
+        '<button type="button" data-budget="' + esc(b) + '" class="h-12 rounded-xl border text-sm font-medium transition ' +
+        (draft.budget === b ? 'border-brand-500 bg-brand-500 text-white' : 'border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' + esc(b) + '</button>'
+      ).join('');
+      const deadlines = Data.DEADLINE_OPTIONS.map((d) =>
+        '<button type="button" data-deadline="' + esc(d) + '" class="h-11 rounded-xl border px-5 text-sm font-medium transition ' +
+        (draft.deadline === d ? 'border-brand-500 bg-brand-500 text-white' : 'border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' + esc(d) + '</button>'
+      ).join('');
+
+      return '<div class="space-y-8">' +
+        '<div><h2 class="text-lg font-bold text-heading">' + t('brief.budget.title') + '</h2>' +
+        '<p class="mt-1 text-sm text-muted">' + t('brief.budget.desc') + '</p>' +
+        '<div class="mt-5 grid gap-3 sm:grid-cols-4">' + budgets + '</div></div>' +
+        '<div><h2 class="text-lg font-bold text-heading">' + t('brief.deadline.title') + '</h2>' +
+        '<div class="mt-5 flex flex-wrap gap-3">' + deadlines + '</div></div></div>';
+    }
+
+    function stepContact() {
+      const t = UI.t, esc = UI.esc;
+      const draft = PF.Brief.get().draft;
+      const cls = 'h-11 w-full rounded-lg border border-themed bg-transparent px-3.5 text-sm text-body placeholder:text-muted focus-ring';
+      const field = (name, label, type, placeholder) =>
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + label + '</span>' +
+        '<input data-draft="' + name + '" type="' + (type || 'text') + '" value="' + esc(draft[name]) + '" placeholder="' + esc(placeholder || '') + '" class="' + cls + '"/></label>';
+
+      return '<div><h2 class="text-lg font-bold text-heading">' + t('brief.contact.title') + '</h2>' +
+        '<p class="mt-1 text-sm text-muted">' + t('brief.contact.desc') + '</p>' +
+        '<div class="mt-6 grid gap-5 sm:grid-cols-2">' +
+        field('name', t('contact.form.name'), 'text', 'Ana Martins') +
+        field('email', t('contact.form.email'), 'email', 'ana@empresa.com') +
+        field('company', t('contact.form.company'), 'text', 'Empresa') +
+        field('phone', t('contact.form.phone'), 'text', '(11) 90000-0000') +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('brief.contact.details') + '</span>' +
+        '<textarea data-draft="message" rows="4" placeholder="' + esc(t('brief.contact.detailsPlaceholder')) + '" class="focus-ring w-full rounded-lg border border-themed bg-transparent px-3.5 py-2.5 text-sm text-body placeholder:text-muted">' + esc(draft.message) + '</textarea></label>' +
+        '</div></div>';
+    }
+
+    function stepReview() {
+      const t = UI.t, esc = UI.esc;
+      const draft = PF.Brief.get().draft;
+      const chosen = draft.scope.map((slug) => Query.serviceBySlug(PF.get().services, slug)).filter(Boolean);
+      const row = (label, value) =>
+        '<div class="flex flex-wrap justify-between gap-2 px-4 py-3"><dt class="text-sm text-muted">' + label + '</dt>' +
+        '<dd class="text-sm font-medium text-heading">' + value + '</dd></div>';
+
+      return '<div><h2 class="text-lg font-bold text-heading">' + t('brief.review.title') + '</h2>' +
+        '<p class="mt-1 text-sm text-muted">' + t('brief.review.desc') + '</p>' +
+        '<dl class="mt-6 divide-y divide-[color:var(--tx-border)] rounded-xl border border-themed">' +
+        row(t('brief.review.scope'), esc(chosen.map((s) => s.name).join(', ')) || '—') +
+        row(t('brief.review.budget'), esc(draft.budget) || '—') +
+        row(t('brief.review.deadline'), esc(draft.deadline) || '—') +
+        '<div class="flex flex-wrap justify-between gap-2 px-4 py-3"><dt class="text-sm text-muted">' + t('brief.review.contact') + '</dt>' +
+        '<dd class="text-right text-sm font-medium text-heading">' + esc(draft.name) +
+        '<span class="block text-xs font-normal text-muted">' + esc(draft.email) + '</span></dd></div>' +
+        (draft.message
+          ? '<div class="px-4 py-3"><dt class="text-sm text-muted">' + t('brief.contact.details') + '</dt>' +
+            '<dd class="mt-1 text-sm text-body">' + esc(draft.message) + '</dd></div>'
+          : '') +
+        '</dl></div>';
+    }
+
+    function submit() {
+      const draft = PF.Brief.get().draft;
+      PF.addLead({
+        name: draft.name,
+        email: draft.email,
+        company: draft.company,
+        phone: draft.phone,
+        budget: draft.budget,
+        scope: draft.scope,
+        deadline: draft.deadline,
+        message: draft.message,
+        source: 'briefing',
+      });
+      PF.Brief.markSubmitted();
+      window.renderPage();
+      UI.notify(UI.t('brief.success'), 'success');
+    }
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon;
+      const brief = PF.Brief.get();
+      const page = document.getElementById('page');
+
+      if (brief.submitted) {
+        page.innerHTML =
+          '<div class="mx-auto max-w-2xl px-4 py-20 text-center sm:px-6 lg:px-8">' +
+          '<span class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-success-50 text-success-600 dark:bg-success-500/15">' + icon('check-circle', { size: 30 }) + '</span>' +
+          '<h1 class="mt-6 font-bold text-heading text-title-sm">' + t('brief.doneTitle') + '</h1>' +
+          '<p class="mt-3 text-muted">' + t('brief.doneDesc') + '</p>' +
+          '<div class="mt-8 flex flex-wrap justify-center gap-3">' +
+          '<a href="cases.html" class="inline-flex h-12 items-center gap-2 rounded-xl bg-brand-500 px-6 text-sm font-medium text-white">' + t('brief.doneCases') + '</a>' +
+          '<button type="button" data-restart class="inline-flex h-12 items-center gap-2 rounded-xl border border-themed px-6 text-sm font-medium text-body">' + t('brief.doneAgain') + '</button>' +
+          '</div></div>';
+        const again = document.querySelector('[data-restart]');
+        if (again) again.addEventListener('click', () => { PF.Brief.reset(); window.renderPage(); });
+        return;
+      }
+
+      const step = brief.step;
+      const steps = PF.Brief.STEPS;
+      const body = [stepScope, stepBudget, stepContact, stepReview][step]();
+      const last = step === steps.length - 1;
+
+      page.innerHTML =
+        '<div class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:py-16 lg:px-8">' +
+        '<header class="max-w-2xl"><p class="text-sm font-semibold uppercase tracking-wider text-brand-500">' + t('brief.eyebrow') + '</p>' +
+        '<h1 class="mt-2 font-bold text-heading text-title-sm sm:text-title-md">' + t('brief.title') + '</h1>' +
+        '<p class="mt-3 text-muted">' + t('brief.subtitle') + '</p></header>' +
+        '<div class="mt-10">' + UI.stepIndicator(steps, step) + '</div>' +
+        '<div class="mt-8 rounded-2xl border border-themed surface-card p-6 shadow-theme-sm md:p-8">' + body +
+        '<div class="mt-8 flex items-center justify-between gap-3 border-t border-themed pt-6">' +
+        '<button type="button" data-back ' + (step === 0 ? 'disabled' : '') + ' class="inline-flex h-11 items-center gap-2 rounded-xl border border-themed px-5 text-sm font-medium text-body transition hover:bg-gray-50 disabled:opacity-40 dark:hover:bg-gray-800">' +
+        icon('chevron-left', { size: 16 }) + t('common.back') + '</button>' +
+        (last
+          ? '<button type="button" data-submit class="inline-flex h-11 items-center gap-2 rounded-xl bg-brand-500 px-6 text-sm font-medium text-white transition hover:bg-brand-600">' +
+            t('brief.submit') + icon('check', { size: 16, strokeWidth: 2.5 }) + '</button>'
+          : '<button type="button" data-next ' + (PF.Brief.canAdvance(step) ? '' : 'disabled') + ' class="inline-flex h-11 items-center gap-2 rounded-xl bg-brand-500 px-6 text-sm font-medium text-white transition hover:bg-brand-600 disabled:opacity-40">' +
+            t('common.next') + icon('chevron-right', { size: 16 }) + '</button>') +
+        '</div></div></div>';
+
+      // ---- wiring ----
+      document.querySelectorAll('[data-step]').forEach((el) =>
+        el.addEventListener('click', () => { PF.Brief.setStep(Number(el.getAttribute('data-step'))); window.renderPage(); })
+      );
+      document.querySelectorAll('[data-scope]').forEach((el) =>
+        el.addEventListener('click', () => { PF.Brief.toggleScope(el.getAttribute('data-scope')); window.renderPage(); })
+      );
+      document.querySelectorAll('[data-budget]').forEach((el) =>
+        el.addEventListener('click', () => { PF.Brief.patch({ budget: el.getAttribute('data-budget') }); window.renderPage(); })
+      );
+      document.querySelectorAll('[data-deadline]').forEach((el) =>
+        el.addEventListener('click', () => { PF.Brief.patch({ deadline: el.getAttribute('data-deadline') }); window.renderPage(); })
+      );
+
+      // Text fields update the draft without re-rendering (keeps caret position);
+      // only the "next" button state is refreshed.
+      document.querySelectorAll('[data-draft]').forEach((el) =>
+        el.addEventListener('input', () => {
+          const patch = {};
+          patch[el.getAttribute('data-draft')] = el.value;
+          PF.Brief.patch(patch);
+          const nextBtn = document.querySelector('[data-next]');
+          if (nextBtn) nextBtn.disabled = !PF.Brief.canAdvance(PF.Brief.get().step);
+        })
+      );
+
+      const backBtn = document.querySelector('[data-back]');
+      if (backBtn) backBtn.addEventListener('click', () => { PF.Brief.back(); window.renderPage(); });
+      const nextBtn = document.querySelector('[data-next]');
+      if (nextBtn) nextBtn.addEventListener('click', () => { PF.Brief.next(); window.renderPage(); });
+      const submitBtn = document.querySelector('[data-submit]');
+      if (submitBtn) submitBtn.addEventListener('click', submit);
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

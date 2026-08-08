@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Depoimentos — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="app" data-guard="true">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    const FILTERS = ['all', 'approved', 'pending'];
+    let filter = 'all';
+    let editingId = null;
+
+    function formBody(row) {
+      const t = UI.t, esc = UI.esc;
+      const input = 'h-10 w-full rounded-lg border border-themed bg-transparent px-3 text-sm text-body focus-ring';
+      const area = 'focus-ring w-full rounded-lg border border-themed bg-transparent px-3 py-2 text-sm text-body';
+      const r = row || { author: '', role: '', company: '', quote: '', rating: 5, caseId: null };
+      const cases = PF.get().cases;
+
+      const ratingOptions = [5, 4, 3, 2, 1].map((n) =>
+        '<option value="' + n + '"' + (r.rating === n ? ' selected' : '') + '>' + n + '</option>'
+      ).join('');
+      const caseOptions = '<option value="">' + t('testimonials.form.noCase') + '</option>' +
+        cases.map((c) => '<option value="' + c.id + '"' + (r.caseId === c.id ? ' selected' : '') + '>' + esc(c.title) + '</option>').join('');
+
+      return '<div class="grid gap-4 sm:grid-cols-2">' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('testimonials.form.author') + '</span>' +
+        '<input data-f="author" value="' + esc(r.author) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('testimonials.form.role') + '</span>' +
+        '<input data-f="role" value="' + esc(r.role) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('testimonials.form.company') + '</span>' +
+        '<input data-f="company" value="' + esc(r.company) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('testimonials.form.rating') + '</span>' +
+        '<select data-f="rating" class="' + input + '">' + ratingOptions + '</select></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('testimonials.form.case') + '</span>' +
+        '<select data-f="caseId" class="' + input + '">' + caseOptions + '</select></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('testimonials.form.quote') + '</span>' +
+        '<textarea data-f="quote" rows="4" class="' + area + '">' + esc(r.quote) + '</textarea></label>' +
+        '</div>';
+    }
+
+    function readForm() {
+      const val = (name) => {
+        const el = document.querySelector('#testi-modal [data-f="' + name + '"]');
+        return el ? el.value : '';
+      };
+      return {
+        author: val('author').trim(),
+        role: val('role'),
+        company: val('company'),
+        rating: Number(val('rating')) || 5,
+        caseId: val('caseId') ? Number(val('caseId')) : null,
+        quote: val('quote').trim(),
+      };
+    }
+
+    function save() {
+      const t = UI.t;
+      const form = readForm();
+      if (!form.author || !form.quote) return;
+
+      if (editingId != null) {
+        PF.updateTestimonial(editingId, form);
+        UI.notify(t('testimonials.updated'), 'success');
+      } else {
+        PF.addTestimonial(Object.assign({}, form, {
+          avatar: Data.pfImage('testi-' + (form.author || Date.now()), 120, 120),
+          approved: false,
+        }));
+        UI.notify(t('testimonials.created'), 'success');
+      }
+      UI.closeModal('testi-modal');
+      window.renderPage();
+    }
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc;
+      const st = PF.get();
+      const visible = st.testimonials.filter((row) => (filter === 'all' ? true : filter === 'approved' ? row.approved : !row.approved));
+      const editing = editingId != null ? st.testimonials.find((r) => r.id === editingId) : null;
+
+      const chips = FILTERS.map((f) =>
+        '<button type="button" data-filter="' + f + '" class="h-9 rounded-lg px-3 text-sm font-medium transition ' +
+        (filter === f ? 'bg-brand-500 text-white' : 'border border-themed text-body hover:bg-gray-50 dark:hover:bg-gray-800') + '">' +
+        t('testimonials.filters.' + f) + '</button>'
+      ).join('');
+
+      const grid = visible.length === 0
+        ? UI.emptyState({ icon: 'message-circle', title: t('testimonials.emptyTitle'), description: t('testimonials.emptyDesc') })
+        : '<div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">' +
+          visible.map((row) => {
+            const linked = row.caseId ? Query.caseById(st.cases, row.caseId) : null;
+            return '<article class="flex flex-col rounded-2xl border border-themed surface-card p-5 shadow-theme-sm">' +
+              '<div class="flex items-start justify-between gap-3"><div class="flex items-center gap-3">' +
+              '<img src="' + row.avatar + '" alt="' + esc(row.author) + '" loading="lazy" class="h-10 w-10 rounded-full object-cover"/>' +
+              '<div class="min-w-0"><p class="truncate text-sm font-semibold text-heading">' + esc(row.author) + '</p>' +
+              '<p class="truncate text-xs text-muted">' + esc(row.role) + ' · ' + esc(row.company) + '</p></div></div>' +
+              UI.badge(row.approved ? t('testimonials.approved') : t('testimonials.pending'), row.approved ? 'success' : 'warning', { dot: true }) +
+              '</div>' +
+              '<div class="mt-3 flex gap-0.5">' + UI.stars(row.rating, 14) + '</div>' +
+              '<p class="mt-3 flex-1 text-sm leading-relaxed text-body">“' + esc(row.quote) + '”</p>' +
+              (linked ? '<p class="mt-3 text-xs text-muted">' + t('testimonials.linkedCase') + ': ' + esc(linked.title) + '</p>' : '') +
+              '<div class="mt-4 flex gap-2 border-t border-themed pt-4">' +
+              '<button type="button" data-approve="' + row.id + '" class="inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-themed text-sm font-medium text-body transition hover:bg-gray-50 dark:hover:bg-gray-800">' +
+              icon(row.approved ? 'eye-off' : 'check-circle', { size: 15 }) + (row.approved ? t('testimonials.unapprove') : t('testimonials.approve')) + '</button>' +
+              '<button type="button" data-edit="' + row.id + '" aria-label="' + esc(t('common.edit')) + '" class="flex h-9 w-9 items-center justify-center rounded-lg border border-themed text-muted transition hover:text-brand-500">' + icon('edit', { size: 15 }) + '</button>' +
+              '<button type="button" data-remove="' + row.id + '" aria-label="' + esc(t('common.remove')) + '" class="flex h-9 w-9 items-center justify-center rounded-lg border border-themed text-muted transition hover:text-error-500">' + icon('trash', { size: 15 }) + '</button>' +
+              '</div></article>';
+          }).join('') + '</div>';
+
+      document.getElementById('page').innerHTML =
+        UI.pageHeader({
+          title: t('testimonials.title'),
+          subtitle: t('testimonials.subtitle'),
+          action: '<button type="button" data-new class="inline-flex h-10 items-center gap-2 rounded-lg bg-brand-500 px-4 text-sm font-medium text-white transition hover:bg-brand-600">' +
+            icon('plus', { size: 16 }) + t('testimonials.new') + '</button>',
+        }) +
+        '<div class="mb-4 flex flex-wrap gap-2">' + chips + '</div>' +
+        grid +
+        UI.modal('testi-modal', {
+          title: editing ? t('testimonials.editTitle') : t('testimonials.newTitle'),
+          size: 'lg',
+          body: formBody(editing),
+          footer:
+            '<button type="button" data-modal-close class="h-10 rounded-lg border border-themed px-4 text-sm font-medium text-body">' + t('common.cancel') + '</button>' +
+            '<button type="button" data-save class="h-10 rounded-lg bg-brand-500 px-5 text-sm font-medium text-white">' + t('common.save') + '</button>',
+        });
+
+      document.querySelectorAll('[data-filter]').forEach((el) =>
+        el.addEventListener('click', () => { filter = el.getAttribute('data-filter'); window.renderPage(); })
+      );
+      document.querySelectorAll('[data-approve]').forEach((el) =>
+        el.addEventListener('click', () => {
+          const id = Number(el.getAttribute('data-approve'));
+          const row = PF.get().testimonials.find((r) => r.id === id);
+          const wasApproved = row && row.approved;
+          PF.toggleApproved(id);
+          window.renderPage();
+          UI.notify(wasApproved ? UI.t('testimonials.unapproved') : UI.t('testimonials.approvedMsg'), 'success');
+        })
+      );
+      document.querySelectorAll('[data-edit]').forEach((el) =>
+        el.addEventListener('click', () => { editingId = Number(el.getAttribute('data-edit')); window.renderPage(); UI.openModal('testi-modal'); })
+      );
+      document.querySelectorAll('[data-remove]').forEach((el) =>
+        el.addEventListener('click', () => {
+          PF.removeTestimonial(Number(el.getAttribute('data-remove')));
+          window.renderPage();
+          UI.notify(UI.t('testimonials.removed'), 'success');
+        })
+      );
+      const newBtn = document.querySelector('[data-new]');
+      if (newBtn) newBtn.addEventListener('click', () => { editingId = null; window.renderPage(); UI.openModal('testi-modal'); });
+      const saveBtn = document.querySelector('[data-save]');
+      if (saveBtn) saveBtn.addEventListener('click', save);
+      document.querySelectorAll('#testi-modal [data-modal-close]').forEach((el) =>
+        el.addEventListener('click', () => { editingId = null; })
+      );
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Esqueci a senha — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="blank">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    function authShell(title, subtitle, inner, footer) {
+      const icon = UI.icon, t = UI.t;
+      return (
+        '<div class="relative flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-50 via-white to-brand-100 px-4 py-10 dark:from-gray-900 dark:via-gray-dark dark:to-gray-900">' +
+        '<div class="absolute inset-0 -z-10 overflow-hidden"><div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-brand-200/40 blur-3xl dark:bg-brand-500/10"></div><div class="absolute -bottom-32 -left-32 h-96 w-96 rounded-full bg-warning-100/60 blur-3xl dark:bg-brand-700/10"></div></div>' +
+        '<div class="w-full max-w-md"><div class="mb-6 flex flex-col items-center">' +
+        '<a href="index.html" class="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-theme-md">' + icon('sparkles', { size: 26 }) + '</a>' +
+        '<h1 class="mt-5 text-title-sm font-bold text-heading">' + title + '</h1>' +
+        '<p class="mt-2 text-center text-sm text-muted">' + subtitle + '</p></div>' +
+        '<div class="surface-card rounded-2xl border p-6 shadow-theme-md md:p-8">' + inner + '</div>' +
+        (footer ? '<p class="mt-6 text-center text-sm text-muted">' + footer + '</p>' : '') +
+        '<p class="mt-6 text-center text-xs text-muted"><a href="index.html" class="hover:text-brand-500">← ' + t('brand') + '</a></p>' +
+        '</div></div>'
+      );
+    }
+
+    let sent = false;
+    let loading = false;
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon;
+      const field = 'h-11 w-full rounded-lg border border-themed bg-gray-50 pl-10 pr-3 text-sm text-body outline-none focus:border-brand-300 focus-ring dark:bg-gray-900';
+
+      const inner = sent
+        ? '<div class="text-center">' +
+          '<span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-success-50 text-success-600 dark:bg-success-500/15">' + icon('check-circle', { size: 26 }) + '</span>' +
+          '<p class="mt-5 text-sm text-muted">' + t('auth.demoHint') + '</p>' +
+          '<a href="login.html" class="mt-6 flex h-11 w-full items-center justify-center rounded-lg bg-brand-500 text-sm font-medium text-white transition hover:bg-brand-600">' + t('auth.loginLink') + '</a>' +
+          '</div>'
+        : '<form data-forgot class="space-y-5">' +
+          '<div><label class="mb-2 block text-sm font-medium text-heading" for="email">' + t('auth.email') + '</label>' +
+          '<div class="relative"><span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">' + icon('mail', { size: 18 }) + '</span>' +
+          '<input id="email" name="email" type="email" required placeholder="voce@agencia.com" class="' + field + '"/></div></div>' +
+          '<button type="submit" ' + (loading ? 'disabled' : '') + ' class="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-brand-500 text-sm font-medium text-white transition hover:bg-brand-600 focus-ring disabled:opacity-60">' +
+          (loading
+            ? '<span class="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>'
+            : icon('mail', { size: 18 }) + t('common.confirm')) +
+          '</button>' +
+          '<a href="login.html" class="flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-themed text-sm font-medium text-body transition hover:bg-gray-50 dark:hover:bg-gray-800">' +
+          icon('chevron-left', { size: 16 }) + t('common.back') + '</a>' +
+          '</form>';
+
+      const footer = t('auth.noAccount') + ' <a href="registro.html" class="font-medium text-brand-500 hover:text-brand-600">' + t('auth.registerCta') + '</a>';
+
+      document.getElementById('page').innerHTML = authShell(t('auth.forgot'), t('auth.demoHint'), inner, footer);
+
+      const form = document.querySelector('[data-forgot]');
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          loading = true;
+          window.renderPage();
+          setTimeout(() => {
+            loading = false;
+            sent = true;
+            window.renderPage();
+            UI.notify(UI.t('auth.demoHint'), 'info');
+          }, 500);
+        });
+      }
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Painel — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="app" data-guard="true">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    let charts = [];
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc, st = PF.get();
+
+      const monthLeads = Query.leadsThisMonth(st.leads);
+      const open = Query.openProposals(st.proposals);
+      const openValue = open.reduce((sum, p) => sum + Query.proposalTotal(p), 0);
+      const rate = Query.winRate(st.proposals);
+      const won = Query.wonRevenue(st.proposals);
+
+      const funnel = Query.leadFunnel(st.leads, st.proposals);
+      const byService = Query.revenueByService(st.proposals, st.leads, st.services);
+      const latest = Query.recentLeads(st.leads, 5);
+      const maxFunnel = Math.max(1, ...funnel.map((f) => f.count));
+
+      const kpis =
+        UI.kpiCard({ title: t('dashboard.kpi.leads'), value: monthLeads, icon: 'users', accent: 'brand', hint: t('dashboard.kpi.leadsHint'), trend: 'up', trendValue: '+18%' }) +
+        UI.kpiCard({ title: t('dashboard.kpi.openProposals'), value: open.length, icon: 'file-text', accent: 'warning', hint: UI.fmt(openValue) }) +
+        UI.kpiCard({ title: t('dashboard.kpi.winRate'), value: rate + '%', icon: 'trending-up', accent: 'success', hint: t('dashboard.kpi.winRateHint') }) +
+        UI.kpiCard({ title: t('dashboard.kpi.revenue'), value: UI.fmt(won), icon: 'dollar', accent: 'info', hint: t('dashboard.kpi.revenueHint') });
+
+      const funnelList =
+        '<ul class="mt-5 space-y-4">' +
+        funnel.map((row) =>
+          '<li><div class="flex items-center justify-between gap-2 text-sm">' + UI.stagePill(row.stage) +
+          '<span class="font-medium text-heading">' + row.count + '</span></div>' +
+          '<div class="mt-2 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800"><div class="h-full rounded-full bg-brand-500" style="width:' + (row.count / maxFunnel) * 100 + '%"></div></div>' +
+          (row.amount > 0 ? '<p class="mt-1 text-xs text-muted">' + UI.fmt(row.amount) + '</p>' : '') + '</li>'
+        ).join('') + '</ul>';
+
+      const byServiceList = byService.length === 0
+        ? '<p class="mt-6 text-sm text-muted">' + t('dashboard.byService.empty') + '</p>'
+        : '<ul class="mt-5 space-y-4">' + byService.map((row) =>
+            '<li><div class="flex items-center justify-between gap-2 text-sm"><span class="truncate text-body">' + esc(row.name) + '</span>' +
+            '<span class="shrink-0 font-medium text-heading">' + UI.fmt(row.amount) + '</span></div>' +
+            '<div class="mt-2 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800"><div class="h-full rounded-full bg-success-500" style="width:' + row.share + '%"></div></div></li>'
+          ).join('') + '</ul>';
+
+      const latestList =
+        '<ul class="mt-4 divide-y divide-[color:var(--tx-border)]">' +
+        latest.map((lead) =>
+          '<li class="flex items-center justify-between gap-3 py-3"><div class="min-w-0">' +
+          '<p class="truncate text-sm font-medium text-heading">' + esc(lead.company || lead.name) + '</p>' +
+          '<p class="truncate text-xs text-muted">' + UI.fmtDate(lead.createdAt) + '</p></div>' + UI.stagePill(lead.stage) + '</li>'
+        ).join('') + '</ul>';
+
+      const openRows = open.length
+        ? open.map((p) =>
+            '<tr><td class="py-3 pr-4 font-medium text-heading">' + esc(p.code) + '</td>' +
+            '<td class="py-3 pr-4 text-body">' + esc(p.client) + '</td>' +
+            '<td class="py-3 pr-4 text-muted">' + UI.fmtDate(p.validUntil) + '</td>' +
+            '<td class="py-3 pr-4">' + UI.proposalPill(p.status) + '</td>' +
+            '<td class="py-3 text-right font-medium text-heading">' + UI.fmt(Query.proposalTotal(p)) + '</td></tr>'
+          ).join('')
+        : '<tr><td colspan="5" class="py-6 text-center text-muted">' + t('dashboard.noOpenProposals') + '</td></tr>';
+
+      document.getElementById('page').innerHTML =
+        UI.pageHeader({
+          title: t('dashboard.title'),
+          subtitle: t('dashboard.subtitle'),
+          action: '<a href="app-orcamentos.html" class="inline-flex h-10 items-center gap-2 rounded-lg bg-brand-500 px-4 text-sm font-medium text-white transition hover:bg-brand-600">' +
+            icon('plus', { size: 16 }) + t('dashboard.newProposal') + '</a>',
+        }) +
+        '<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">' + kpis + '</div>' +
+        '<div class="mt-6 grid gap-6 xl:grid-cols-3">' +
+        '<div class="rounded-2xl border border-themed surface-card p-5 shadow-theme-sm xl:col-span-2 md:p-6">' +
+        '<div class="flex flex-wrap items-center justify-between gap-3"><h2 class="text-base font-semibold text-heading">' + t('dashboard.charts.revenue') + '</h2>' +
+        '<span class="text-xs text-muted">' + t('dashboard.charts.lastMonths', { count: 8 }) + '</span></div>' +
+        '<div class="mt-4" id="chart-revenue"></div></div>' +
+        '<div class="rounded-2xl border border-themed surface-card p-5 shadow-theme-sm md:p-6">' +
+        '<h2 class="text-base font-semibold text-heading">' + t('dashboard.charts.leads') + '</h2>' +
+        '<div class="mt-4" id="chart-leads"></div></div>' +
+        '</div>' +
+        '<div class="mt-6 grid gap-6 xl:grid-cols-3">' +
+        '<div class="rounded-2xl border border-themed surface-card p-5 shadow-theme-sm md:p-6"><h2 class="text-base font-semibold text-heading">' + t('dashboard.funnel.title') + '</h2>' + funnelList + '</div>' +
+        '<div class="rounded-2xl border border-themed surface-card p-5 shadow-theme-sm md:p-6"><h2 class="text-base font-semibold text-heading">' + t('dashboard.byService.title') + '</h2>' + byServiceList + '</div>' +
+        '<div class="rounded-2xl border border-themed surface-card p-5 shadow-theme-sm md:p-6">' +
+        '<div class="flex items-center justify-between"><h2 class="text-base font-semibold text-heading">' + t('dashboard.latestLeads') + '</h2>' +
+        '<a href="app-leads.html" class="text-xs font-medium text-brand-600 dark:text-brand-400">' + t('common.viewAll') + '</a></div>' + latestList + '</div>' +
+        '</div>' +
+        '<div class="mt-6 rounded-2xl border border-themed surface-card p-5 shadow-theme-sm md:p-6">' +
+        '<div class="flex items-center justify-between"><h2 class="text-base font-semibold text-heading">' + t('dashboard.openProposals') + '</h2>' +
+        '<a href="app-orcamentos.html" class="text-xs font-medium text-brand-600 dark:text-brand-400">' + t('common.viewAll') + '</a></div>' +
+        '<div class="mt-4 overflow-x-auto"><table class="w-full min-w-[560px] text-sm">' +
+        '<thead><tr class="border-b border-themed text-left text-xs uppercase tracking-wider text-muted">' +
+        '<th class="py-2 pr-4 font-medium">' + t('proposals.code') + '</th>' +
+        '<th class="py-2 pr-4 font-medium">' + t('proposals.client') + '</th>' +
+        '<th class="py-2 pr-4 font-medium">' + t('proposals.validUntil') + '</th>' +
+        '<th class="py-2 pr-4 font-medium">' + t('common.status') + '</th>' +
+        '<th class="py-2 text-right font-medium">' + t('proposals.total') + '</th></tr></thead>' +
+        '<tbody class="divide-y divide-[color:var(--tx-border)]">' + openRows + '</tbody></table></div></div>' +
+        '<p class="mt-6 text-xs text-muted">' + t('dashboard.caseCount', { count: st.cases.filter((c) => c.published).length }) + '</p>';
+
+      renderCharts();
+    };
+
+    function renderCharts() {
+      if (typeof ApexCharts === 'undefined') return;
+      charts.forEach((c) => c.destroy());
+      charts = [];
+      const t = UI.t;
+      const dark = UIState.get().darkMode;
+      const baseText = dark ? '#98a2b3' : '#667085';
+      const grid = dark ? '#1f2937' : '#e4e7ec';
+      const common = {
+        chart: { fontFamily: 'Outfit, sans-serif', toolbar: { show: false }, foreColor: baseText },
+        grid: { borderColor: grid, strokeDashArray: 3 },
+        dataLabels: { enabled: false },
+        colors: ['#465fff'],
+      };
+
+      const revEl = document.getElementById('chart-revenue');
+      if (revEl) {
+        const c = new ApexCharts(revEl, Object.assign({}, common, {
+          chart: Object.assign({}, common.chart, { type: 'area', height: 300 }),
+          series: [{ name: t('dashboard.charts.revenueSeries'), data: Data.REVENUE_SERIES.map((p) => p.value) }],
+          xaxis: { categories: Data.REVENUE_SERIES.map((p) => p.label), axisBorder: { show: false }, axisTicks: { show: false }, tooltip: { enabled: false } },
+          yaxis: { labels: { formatter: (v) => UI.fmtCompact(v) } },
+          stroke: { curve: 'smooth', width: 2 },
+          fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.05 } },
+          tooltip: { theme: dark ? 'dark' : 'light', y: { formatter: (v) => UI.fmt(v) } },
+        }));
+        c.render();
+        charts.push(c);
+      }
+
+      const leadsEl = document.getElementById('chart-leads');
+      if (leadsEl) {
+        const c = new ApexCharts(leadsEl, Object.assign({}, common, {
+          chart: Object.assign({}, common.chart, { type: 'bar', height: 300 }),
+          series: [{ name: t('dashboard.charts.leadsSeries'), data: Data.LEADS_SERIES.map((p) => p.value) }],
+          xaxis: { categories: Data.LEADS_SERIES.map((p) => p.label), axisBorder: { show: false }, axisTicks: { show: false } },
+          plotOptions: { bar: { borderRadius: 6, columnWidth: '55%' } },
+          tooltip: { theme: dark ? 'dark' : 'light' },
+        }));
+        c.render();
+        charts.push(c);
+      }
+    }
+
+    window.onThemeChange = renderCharts;
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

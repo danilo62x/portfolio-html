@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Contato — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="public">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    const CHANNELS = [
+      { icon: 'mail', labelKey: 'contact.channels.email', value: 'oi@estudionorte.com' },
+      { icon: 'phone', labelKey: 'contact.channels.phone', value: '+55 11 4002-8922' },
+      { icon: 'map-pin', labelKey: 'contact.channels.address', value: 'Rua Aurora, 340 — São Paulo, SP' },
+      { icon: 'clock', labelKey: 'contact.channels.hours', value: 'Seg a sex, 9h às 18h' },
+    ];
+
+    let form = { name: '', email: '', company: '', phone: '', service: '', message: '' };
+    let errors = {};
+
+    function validate() {
+      const t = UI.t;
+      const e = {};
+      if (!form.name.trim()) e.name = t('validation.required');
+      if (!form.email.trim()) e.email = t('validation.required');
+      else if (!/.+@.+\..+/.test(form.email)) e.email = t('validation.email');
+      if (!form.message.trim()) e.message = t('validation.required');
+      else if (form.message.trim().length < 10) e.message = t('validation.min', { count: 10 });
+      return e;
+    }
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc;
+      const services = PF.get().services.filter((s) => s.active);
+      const input = 'h-11 w-full rounded-lg border border-themed bg-transparent px-3.5 text-sm text-body placeholder:text-muted focus-ring';
+
+      const field = (name, label, type, placeholder) =>
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + label + '</span>' +
+        '<input data-field="' + name + '" type="' + (type || 'text') + '" value="' + esc(form[name]) + '" placeholder="' + esc(placeholder || '') + '" class="' + input + '"/>' +
+        (errors[name] ? '<span class="block text-xs text-error-500">' + errors[name] + '</span>' : '') + '</label>';
+
+      const options = '<option value="">' + t('contact.form.servicePlaceholder') + '</option>' +
+        services.map((s) => '<option value="' + esc(s.slug) + '"' + (form.service === s.slug ? ' selected' : '') + '>' + esc(s.name) + '</option>').join('');
+
+      const formHtml =
+        '<div class="rounded-2xl border border-themed surface-card p-6 shadow-theme-sm md:p-8"><form data-contact class="space-y-5">' +
+        '<div class="grid gap-5 sm:grid-cols-2">' + field('name', t('contact.form.name'), 'text', 'Ana Martins') + field('email', t('contact.form.email'), 'email', 'ana@empresa.com') + '</div>' +
+        '<div class="grid gap-5 sm:grid-cols-2">' + field('company', t('contact.form.company'), 'text', 'Empresa') + field('phone', t('contact.form.phone'), 'text', '(11) 90000-0000') + '</div>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('contact.form.service') + '</span>' +
+        '<select data-field="service" class="' + input + '">' + options + '</select></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('contact.form.message') + '</span>' +
+        '<textarea data-field="message" rows="5" placeholder="' + esc(t('contact.form.messagePlaceholder')) + '" class="focus-ring w-full rounded-lg border border-themed bg-transparent px-3.5 py-2.5 text-sm text-body placeholder:text-muted">' + esc(form.message) + '</textarea>' +
+        (errors.message ? '<span class="block text-xs text-error-500">' + errors.message + '</span>' : '') + '</label>' +
+        '<button type="submit" class="inline-flex h-12 items-center gap-2 rounded-xl bg-brand-500 px-6 text-sm font-medium text-white transition hover:bg-brand-600">' +
+        t('contact.form.submit') + icon('arrow-right', { size: 18 }) + '</button>' +
+        '</form></div>';
+
+      const aside =
+        '<aside class="space-y-4 lg:col-span-2">' +
+        CHANNELS.map((c) =>
+          '<div class="flex gap-4 rounded-2xl border border-themed surface-card p-5">' +
+          '<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/15">' + icon(c.icon, { size: 20 }) + '</span>' +
+          '<div class="min-w-0"><p class="text-xs uppercase tracking-wider text-muted">' + t(c.labelKey) + '</p>' +
+          '<p class="mt-1 text-sm font-medium text-heading">' + esc(c.value) + '</p></div></div>'
+        ).join('') +
+        '<div class="overflow-hidden rounded-2xl border border-themed"><div class="flex h-48 items-center justify-center bg-gray-100 text-muted dark:bg-gray-800">' +
+        '<div class="text-center">' + icon('map-pin', { size: 28, className: 'mx-auto' }) + '<p class="mt-2 text-xs">' + t('contact.mapPlaceholder') + '</p></div>' +
+        '</div></div></aside>';
+
+      document.getElementById('page').innerHTML =
+        '<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16 lg:px-8">' +
+        '<header class="max-w-2xl"><p class="text-sm font-semibold uppercase tracking-wider text-brand-500">' + t('contact.eyebrow') + '</p>' +
+        '<h1 class="mt-2 font-bold text-heading text-title-sm sm:text-title-md">' + t('contact.title') + '</h1>' +
+        '<p class="mt-3 text-muted">' + t('contact.subtitle') + '</p></header>' +
+        '<div class="mt-10 grid gap-8 lg:grid-cols-5"><div class="lg:col-span-3">' + formHtml + '</div>' + aside + '</div></div>';
+
+      document.querySelectorAll('[data-field]').forEach((el) =>
+        el.addEventListener('input', () => {
+          form[el.getAttribute('data-field')] = el.value;
+        })
+      );
+
+      const el = document.querySelector('[data-contact]');
+      if (el) {
+        el.addEventListener('submit', (e) => {
+          e.preventDefault();
+          errors = validate();
+          if (Object.keys(errors).length > 0) {
+            window.renderPage();
+            return;
+          }
+          PF.addLead({
+            name: form.name,
+            email: form.email,
+            company: form.company,
+            phone: form.phone,
+            budget: '',
+            scope: form.service ? [form.service] : [],
+            deadline: '',
+            message: form.message,
+            source: 'site',
+          });
+          form = { name: '', email: '', company: '', phone: '', service: '', message: '' };
+          errors = {};
+          window.renderPage();
+          UI.notify(UI.t('contact.success'), 'success');
+        });
+      }
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

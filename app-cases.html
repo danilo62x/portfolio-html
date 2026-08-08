@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <title>Cases — Estúdio Norte</title>
+  <link rel="stylesheet" href="assets/css/tailwind.css" />
+  <script src="assets/js/state.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/format.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/pf.js"></script>
+  <script src="assets/js/query.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script src="assets/js/i18n.js"></script>
+</head>
+<body data-shell="app" data-guard="true">
+  <div id="app"><div id="page"></div></div>
+
+  <script>
+    const CATEGORIES = ['branding', 'web', 'app', 'ecommerce', 'campanha'];
+    let editingId = null;
+
+    function formBody(study) {
+      const t = UI.t, esc = UI.esc;
+      const input = 'h-10 w-full rounded-lg border border-themed bg-transparent px-3 text-sm text-body focus-ring';
+      const area = 'focus-ring w-full rounded-lg border border-themed bg-transparent px-3 py-2 text-sm text-body';
+      const s = study || { title: '', client: '', category: 'branding', year: new Date().getFullYear(), summary: '', challenge: '', solution: '', tags: [] };
+
+      const options = CATEGORIES.map((c) =>
+        '<option value="' + c + '"' + (s.category === c ? ' selected' : '') + '>' + t('caseCategories.' + c) + '</option>'
+      ).join('');
+
+      return '<div class="grid gap-4 sm:grid-cols-2">' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('casesAdmin.form.title') + '</span>' +
+        '<input data-f="title" value="' + esc(s.title) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('casesAdmin.form.client') + '</span>' +
+        '<input data-f="client" value="' + esc(s.client) + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('casesAdmin.form.year') + '</span>' +
+        '<input data-f="year" type="number" value="' + s.year + '" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('casesAdmin.form.category') + '</span>' +
+        '<select data-f="category" class="' + input + '">' + options + '</select></label>' +
+        '<label class="space-y-1.5 block"><span class="block text-sm font-medium text-heading">' + t('casesAdmin.form.tags') + '</span>' +
+        '<input data-f="tags" value="' + esc(s.tags.join(', ')) + '" placeholder="Marca, Web" class="' + input + '"/></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('casesAdmin.form.summary') + '</span>' +
+        '<textarea data-f="summary" rows="2" class="' + area + '">' + esc(s.summary) + '</textarea></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('casesAdmin.form.challenge') + '</span>' +
+        '<textarea data-f="challenge" rows="3" class="' + area + '">' + esc(s.challenge) + '</textarea></label>' +
+        '<label class="space-y-1.5 block sm:col-span-2"><span class="block text-sm font-medium text-heading">' + t('casesAdmin.form.solution') + '</span>' +
+        '<textarea data-f="solution" rows="3" class="' + area + '">' + esc(s.solution) + '</textarea></label>' +
+        '</div>';
+    }
+
+    function readForm() {
+      const val = (name) => {
+        const el = document.querySelector('#case-modal [data-f="' + name + '"]');
+        return el ? el.value : '';
+      };
+      return {
+        title: val('title').trim(),
+        client: val('client').trim(),
+        category: val('category'),
+        year: Number(val('year')) || new Date().getFullYear(),
+        summary: val('summary'),
+        challenge: val('challenge'),
+        solution: val('solution'),
+        tags: val('tags').split(',').map((s) => s.trim()).filter(Boolean),
+      };
+    }
+
+    function save() {
+      const t = UI.t;
+      const form = readForm();
+      if (!form.title) return;
+
+      if (editingId != null) {
+        PF.updateCase(editingId, Object.assign({}, form, { slug: PF.slugify(form.title) }));
+        UI.notify(t('casesAdmin.updated'), 'success');
+      } else {
+        const slug = PF.slugify(form.title) || 'case-' + Date.now();
+        PF.addCase(Object.assign({}, form, {
+          slug: slug,
+          cover: Data.pfImage(slug),
+          gallery: [Data.pfImage(slug + '-1'), Data.pfImage(slug + '-2')],
+          results: [],
+          serviceIds: [],
+          featured: false,
+          published: false,
+        }));
+        UI.notify(t('casesAdmin.created'), 'success');
+      }
+      UI.closeModal('case-modal');
+      window.renderPage();
+    }
+
+    window.renderPage = function () {
+      const t = UI.t, icon = UI.icon, esc = UI.esc;
+      const cases = PF.get().cases;
+      const editing = editingId != null ? Query.caseById(cases, editingId) : null;
+
+      const grid = cases.length === 0
+        ? UI.emptyState({ icon: 'briefcase', title: t('casesAdmin.emptyTitle'), description: t('casesAdmin.emptyDesc') })
+        : '<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">' +
+          cases.map((study) =>
+            '<article class="flex flex-col overflow-hidden rounded-2xl border border-themed surface-card shadow-theme-sm">' +
+            '<div class="relative aspect-16/9"><img src="' + study.cover + '" alt="' + esc(study.title) + '" loading="lazy" class="h-full w-full object-cover"/>' +
+            '<div class="absolute left-3 top-3 flex gap-2">' +
+            UI.badge(study.published ? t('casesAdmin.published') : t('casesAdmin.draft'), study.published ? 'success' : 'gray', { variant: 'solid' }) +
+            (study.featured ? UI.badge(t('casesAdmin.featured'), 'warning', { variant: 'solid', icon: 'star' }) : '') +
+            '</div></div>' +
+            '<div class="flex flex-1 flex-col p-5">' +
+            '<p class="text-xs uppercase tracking-wider text-muted">' + esc(study.client) + ' · ' + study.year + '</p>' +
+            '<h3 class="mt-1 text-base font-bold text-heading">' + esc(study.title) + '</h3>' +
+            '<p class="mt-2 line-clamp-2 flex-1 text-sm text-muted">' + esc(study.summary) + '</p>' +
+            '<div class="mt-4 space-y-3 border-t border-themed pt-4">' +
+            '<div class="flex items-center justify-between gap-3"><span class="text-sm text-body">' + t('casesAdmin.publishedLabel') + '</span>' +
+            UI.switchToggle(study.published, 'data-toggle-published="' + study.id + '"', 'sm') + '</div>' +
+            '<div class="flex items-center justify-between gap-3"><span class="text-sm text-body">' + t('casesAdmin.featuredLabel') + '</span>' +
+            UI.switchToggle(study.featured, 'data-toggle-featured="' + study.id + '"', 'sm') + '</div></div>' +
+            '<div class="mt-4 flex gap-2">' +
+            '<button type="button" data-edit="' + study.id + '" class="inline-flex h-9 flex-1 items-center justify-center gap-2 rounded-lg border border-themed text-sm font-medium text-body transition hover:bg-gray-50 dark:hover:bg-gray-800">' +
+            icon('edit', { size: 15 }) + t('common.edit') + '</button>' +
+            '<button type="button" data-remove="' + study.id + '" aria-label="' + esc(t('common.remove')) + '" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-themed text-muted transition hover:text-error-500">' +
+            icon('trash', { size: 15 }) + '</button></div>' +
+            '</div></article>'
+          ).join('') + '</div>';
+
+      document.getElementById('page').innerHTML =
+        UI.pageHeader({
+          title: t('casesAdmin.title'),
+          subtitle: t('casesAdmin.subtitle'),
+          action: '<button type="button" data-new class="inline-flex h-10 items-center gap-2 rounded-lg bg-brand-500 px-4 text-sm font-medium text-white transition hover:bg-brand-600">' +
+            icon('plus', { size: 16 }) + t('casesAdmin.new') + '</button>',
+        }) +
+        grid +
+        UI.modal('case-modal', {
+          title: editing ? t('casesAdmin.editTitle') : t('casesAdmin.newTitle'),
+          size: 'lg',
+          body: formBody(editing),
+          footer:
+            '<button type="button" data-modal-close class="h-10 rounded-lg border border-themed px-4 text-sm font-medium text-body">' + t('common.cancel') + '</button>' +
+            '<button type="button" data-save class="h-10 rounded-lg bg-brand-500 px-5 text-sm font-medium text-white disabled:opacity-40">' + t('common.save') + '</button>',
+        });
+
+      document.querySelectorAll('[data-toggle-published]').forEach((el) =>
+        el.addEventListener('click', () => { PF.togglePublished(Number(el.getAttribute('data-toggle-published'))); window.renderPage(); })
+      );
+      document.querySelectorAll('[data-toggle-featured]').forEach((el) =>
+        el.addEventListener('click', () => { PF.toggleFeatured(Number(el.getAttribute('data-toggle-featured'))); window.renderPage(); })
+      );
+      document.querySelectorAll('[data-edit]').forEach((el) =>
+        el.addEventListener('click', () => { editingId = Number(el.getAttribute('data-edit')); window.renderPage(); UI.openModal('case-modal'); })
+      );
+      document.querySelectorAll('[data-remove]').forEach((el) =>
+        el.addEventListener('click', () => {
+          PF.removeCase(Number(el.getAttribute('data-remove')));
+          window.renderPage();
+          UI.notify(UI.t('casesAdmin.removed'), 'success');
+        })
+      );
+      const newBtn = document.querySelector('[data-new]');
+      if (newBtn) newBtn.addEventListener('click', () => { editingId = null; window.renderPage(); UI.openModal('case-modal'); });
+
+      const saveBtn = document.querySelector('[data-save]');
+      if (saveBtn) saveBtn.addEventListener('click', save);
+      document.querySelectorAll('#case-modal [data-modal-close]').forEach((el) =>
+        el.addEventListener('click', () => { editingId = null; })
+      );
+    };
+  </script>
+  <script src="assets/js/layout.js"></script>
+</body>
+</html>

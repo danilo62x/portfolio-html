@@ -1,0 +1,551 @@
+{
+  "brand": "Estúdio Norte",
+  "common": {
+    "search": "Buscar",
+    "noResults": "Nenhum resultado",
+    "previous": "Anterior",
+    "next": "Avançar",
+    "back": "Voltar",
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "confirm": "Confirmar",
+    "edit": "Editar",
+    "remove": "Remover",
+    "add": "Adicionar",
+    "all": "Todos",
+    "theme": "Tema",
+    "loading": "Carregando",
+    "actions": "Ações",
+    "status": "Status",
+    "viewAll": "Ver tudo",
+    "viewCase": "Ver o case",
+    "optional": "opcional"
+  },
+  "nav": {
+    "cases": "Cases",
+    "services": "Serviços",
+    "about": "Sobre",
+    "contact": "Contato",
+    "brief": "Pedir orçamento",
+    "login": "Entrar",
+    "dashboard": "Painel"
+  },
+  "appNav": {
+    "commercial": "Comercial",
+    "content": "Conteúdo",
+    "settingsSection": "Conta",
+    "dashboard": "Visão geral",
+    "leads": "Leads",
+    "proposals": "Propostas",
+    "cases": "Cases",
+    "services": "Serviços",
+    "testimonials": "Depoimentos",
+    "settings": "Configurações",
+    "notifications": "Notificações",
+    "collapse": "Recolher menu",
+    "logout": "Sair",
+    "proTitle": "Funil comercial",
+    "proDesc": "Acompanhe os leads do briefing",
+    "openLeads": "Abrir leads"
+  },
+  "notifications": {
+    "newLead": "Novo lead: {{name}}",
+    "proposalAccepted": "Proposta {{name}} aceita",
+    "casePublished": "Case publicado: {{name}}"
+  },
+  "auth": {
+    "loginTitle": "Entrar no painel",
+    "loginSubtitle": "Acesse os leads, as propostas e o portfólio do estúdio.",
+    "registerTitle": "Criar conta",
+    "registerSubtitle": "Comece a organizar o comercial do seu estúdio.",
+    "email": "E-mail",
+    "password": "Senha",
+    "name": "Nome",
+    "studio": "Estúdio",
+    "remember": "Manter conectado",
+    "forgot": "Esqueci a senha",
+    "loginCta": "Entrar",
+    "registerCta": "Criar conta",
+    "loggingIn": "Entrando…",
+    "noAccount": "Ainda não tem conta?",
+    "hasAccount": "Já tem conta?",
+    "loginLink": "Entrar",
+    "loginError": "Informe e-mail e senha.",
+    "loginSuccess": "Bem-vindo de volta",
+    "registerSuccess": "Conta criada",
+    "demoTitle": "Conta de demonstração",
+    "demoHint": "Autenticação fictícia: qualquer e-mail e senha entram.",
+    "terms": "Aceito os termos de uso e a política de privacidade."
+  },
+  "validation": {
+    "required": "Campo obrigatório",
+    "email": "E-mail inválido",
+    "min": "Escreva pelo menos {{count}} caracteres"
+  },
+  "serviceCategories": {
+    "branding": "Marca",
+    "web": "Web",
+    "produto": "Produto",
+    "marketing": "Marketing",
+    "motion": "Motion"
+  },
+  "caseCategories": {
+    "branding": "Marca",
+    "web": "Site",
+    "app": "Aplicativo",
+    "ecommerce": "E-commerce",
+    "campanha": "Campanha"
+  },
+  "leadStages": {
+    "novo": "Novo",
+    "contato": "Em contato",
+    "proposta": "Proposta",
+    "ganho": "Ganho",
+    "perdido": "Perdido"
+  },
+  "leadSources": {
+    "site": "Site",
+    "briefing": "Briefing",
+    "indicacao": "Indicação",
+    "social": "Redes"
+  },
+  "proposalStatuses": {
+    "rascunho": "Rascunho",
+    "enviada": "Enviada",
+    "aceita": "Aceita",
+    "recusada": "Recusada"
+  },
+  "process": {
+    "s1": {
+      "title": "Descoberta",
+      "desc": "Entrevistas, dados e uma leitura honesta do problema antes de propor solução."
+    },
+    "s2": {
+      "title": "Estratégia",
+      "desc": "Escopo, prioridades e o critério de sucesso escritos junto com você."
+    },
+    "s3": {
+      "title": "Design",
+      "desc": "Ciclos curtos com entrega navegável, revisão e ajuste a cada semana."
+    },
+    "s4": {
+      "title": "Entrega",
+      "desc": "Implementação, testes e o repasse para o time que vai tocar o dia a dia."
+    },
+    "s5": {
+      "title": "Medição",
+      "desc": "Acompanhamos os números combinados por 90 dias depois do lançamento."
+    }
+  },
+  "faq": {
+    "q1": {
+      "q": "Quanto tempo leva um projeto?",
+      "a": "Depende do escopo. Uma identidade visual costuma levar seis semanas; um produto digital, de dois a três meses. Cada serviço mostra o prazo típico na página de serviços."
+    },
+    "q2": {
+      "q": "Como funciona o pagamento?",
+      "a": "Trinta por cento na assinatura do contrato e o restante dividido nas entregas acordadas. Projetos acima de três meses podem ser mensalizados."
+    },
+    "q3": {
+      "q": "Vocês trabalham com o time interno do cliente?",
+      "a": "Sim, e preferimos assim. Nosso papel é entregar o projeto e deixar o time capaz de continuar sem depender da gente."
+    },
+    "q4": {
+      "q": "Quem fica com os arquivos abertos?",
+      "a": "Você. Todos os arquivos editáveis, o repositório de código e as contas usadas ficam com o cliente ao fim do projeto."
+    },
+    "q5": {
+      "q": "Fazem manutenção depois da entrega?",
+      "a": "Oferecemos um contrato mensal opcional para evolução e suporte. Não é obrigatório para receber o projeto."
+    }
+  },
+  "home": {
+    "hero": {
+      "badge": "Aceitando projetos para o próximo trimestre",
+      "title": "Marca, produto e site para empresas que precisam sair do lugar",
+      "subtitle": "Somos um estúdio de 14 pessoas que trabalha em ciclos curtos, com escopo escrito e resultado medido. Sem apresentação de 80 slides.",
+      "cta": "Pedir um orçamento",
+      "secondary": "Ver os cases"
+    },
+    "stats": {
+      "projects": "Projetos entregues",
+      "years": "Anos de estúdio",
+      "clients": "Clientes ativos",
+      "rating": "Nota média dos clientes"
+    },
+    "services": {
+      "eyebrow": "O que fazemos",
+      "title": "Serviços",
+      "subtitle": "Cada projeto começa por uma pergunta de negócio, não por uma referência visual."
+    },
+    "cases": {
+      "eyebrow": "Trabalhos recentes",
+      "title": "Cases em destaque",
+      "all": "Ver todos os cases"
+    },
+    "process": {
+      "eyebrow": "Como trabalhamos",
+      "title": "Cinco etapas, sem surpresa no meio do caminho",
+      "subtitle": "O mesmo processo em todo projeto, do rebranding ao app. O que muda é a profundidade de cada etapa."
+    },
+    "testimonials": {
+      "title": "O que os clientes dizem"
+    },
+    "clients": {
+      "title": "Empresas que confiaram no estúdio"
+    },
+    "cta": {
+      "title": "Conte o que você precisa resolver",
+      "subtitle": "Responda o briefing em quatro etapas e devolvemos uma proposta em até três dias úteis.",
+      "button": "Começar o briefing"
+    },
+    "footer": {
+      "tagline": "Estúdio de marca, produto e web. Trabalhamos com escopo escrito e resultado medido.",
+      "rights": "Todos os direitos reservados."
+    }
+  },
+  "landing": {
+    "footer": {
+      "tagline": "Estúdio de marca, produto e web. Trabalhamos com escopo escrito e resultado medido.",
+      "rights": "Todos os direitos reservados.",
+      "docs": "Serviços",
+      "help": "Ajuda",
+      "privacy": "Privacidade"
+    }
+  },
+  "cases": {
+    "eyebrow": "Portfólio",
+    "title": "Cases",
+    "subtitle": "Projetos publicados com o problema, a solução e o número que mudou.",
+    "searchPlaceholder": "Buscar por cliente, projeto ou tag",
+    "count": "{{count}} projetos",
+    "emptyTitle": "Nada encontrado",
+    "emptyDesc": "Tente outra categoria ou limpe a busca.",
+    "notFoundTitle": "Case não encontrado",
+    "notFoundDesc": "Esse projeto pode ter sido despublicado.",
+    "backToList": "Voltar para os cases"
+  },
+  "caseDetail": {
+    "client": "Cliente",
+    "year": "Ano",
+    "services": "Serviços",
+    "challenge": "O desafio",
+    "solution": "O que fizemos",
+    "results": "Resultados",
+    "next": "Próximo case",
+    "related": "Projetos relacionados",
+    "ctaTitle": "Quer um resultado parecido?"
+  },
+  "services": {
+    "eyebrow": "Serviços",
+    "title": "O que o estúdio faz",
+    "subtitle": "Escolha por problema, não por entregável. Se estiver em dúvida, o briefing ajuda a definir.",
+    "priceFrom": "A partir de",
+    "weeks": "{{count}} semanas",
+    "request": "Pedir orçamento",
+    "faqTitle": "Perguntas frequentes",
+    "ctaTitle": "Ainda não sabe por onde começar?",
+    "ctaSubtitle": "Responda o briefing e a gente sugere o escopo."
+  },
+  "about": {
+    "eyebrow": "Sobre",
+    "title": "Um estúdio pequeno, de propósito",
+    "p1": "Começamos em 2012 como dois designers atendendo projetos de marca. Hoje somos 14 pessoas entre design, estratégia e engenharia, e continuamos pequenos porque é assim que conseguimos participar de cada projeto de verdade.",
+    "p2": "Não temos departamento de novos negócios. Quem conversa com você na primeira reunião é quem vai tocar o trabalho.",
+    "valuesTitle": "Como trabalhamos",
+    "values": {
+      "v1": {
+        "title": "Pesquisa antes de pixel",
+        "desc": "Nenhuma tela é desenhada antes de entendermos quem usa e por quê."
+      },
+      "v2": {
+        "title": "Time junto",
+        "desc": "Trabalhamos dentro do seu time, com acesso às mesmas ferramentas."
+      },
+      "v3": {
+        "title": "Número combinado",
+        "desc": "Todo projeto tem um critério de sucesso definido no começo."
+      },
+      "v4": {
+        "title": "Você fica com tudo",
+        "desc": "Arquivos, código e contas são entregues ao cliente."
+      }
+    },
+    "teamTitle": "Quem faz",
+    "teamSubtitle": "Quatro das quatorze pessoas do estúdio, e quem você encontra nas reuniões.",
+    "timelineTitle": "Linha do tempo",
+    "timeline": {
+      "t1": "Dois designers, uma sala emprestada e os primeiros cinco clientes.",
+      "t2": "Primeiro projeto de produto digital e a chegada do time de engenharia.",
+      "t3": "Estúdio remoto por escolha, com pessoas em quatro estados.",
+      "t4": "Cem projetos entregues e o primeiro contrato de evolução contínua.",
+      "t5": "Quatorze pessoas, três verticais e uma lista de espera de dois meses."
+    },
+    "cta": "Falar com o estúdio"
+  },
+  "contact": {
+    "eyebrow": "Contato",
+    "title": "Vamos conversar",
+    "subtitle": "Respondemos em até um dia útil. Se preferir, responda o briefing para acelerar a proposta.",
+    "channels": {
+      "email": "E-mail",
+      "phone": "Telefone",
+      "address": "Endereço",
+      "hours": "Atendimento"
+    },
+    "form": {
+      "name": "Nome",
+      "email": "E-mail",
+      "company": "Empresa",
+      "phone": "Telefone",
+      "service": "Serviço de interesse",
+      "servicePlaceholder": "Selecione (opcional)",
+      "message": "Mensagem",
+      "messagePlaceholder": "Conte o contexto e o que precisa resolver.",
+      "submit": "Enviar mensagem"
+    },
+    "success": "Mensagem enviada. Entramos em contato em breve.",
+    "mapPlaceholder": "Mapa da sede"
+  },
+  "brief": {
+    "eyebrow": "Briefing",
+    "title": "Peça um orçamento",
+    "subtitle": "Quatro etapas, cerca de três minutos. Devolvemos uma proposta em até três dias úteis.",
+    "steps": {
+      "scope": "Escopo",
+      "budget": "Investimento",
+      "contact": "Contato",
+      "review": "Revisão"
+    },
+    "scope": {
+      "title": "O que você precisa?",
+      "desc": "Marque tudo que faz sentido. Dá para ajustar depois."
+    },
+    "budget": {
+      "title": "Faixa de investimento",
+      "desc": "Serve para dimensionar o escopo, não para fechar preço agora."
+    },
+    "deadline": {
+      "title": "Prazo desejado"
+    },
+    "contact": {
+      "title": "Como falamos com você",
+      "desc": "Só o nome e o e-mail são obrigatórios.",
+      "details": "Detalhes do projeto",
+      "detailsPlaceholder": "Contexto, referências, restrições, o que já foi tentado."
+    },
+    "review": {
+      "title": "Confira antes de enviar",
+      "desc": "Você pode voltar em qualquer etapa para ajustar.",
+      "scope": "Escopo",
+      "budget": "Investimento",
+      "deadline": "Prazo",
+      "contact": "Contato"
+    },
+    "submit": "Enviar briefing",
+    "success": "Briefing enviado",
+    "doneTitle": "Recebemos seu briefing",
+    "doneDesc": "Vamos ler com calma e voltar com uma proposta em até três dias úteis.",
+    "doneCases": "Ver os cases",
+    "doneAgain": "Enviar outro briefing"
+  },
+  "dashboard": {
+    "title": "Visão geral",
+    "subtitle": "Como está o comercial do estúdio neste mês.",
+    "newProposal": "Nova proposta",
+    "kpi": {
+      "leads": "Leads no mês",
+      "leadsHint": "Contato pelo site e pelo briefing",
+      "openProposals": "Propostas abertas",
+      "winRate": "Taxa de fechamento",
+      "winRateHint": "Aceitas sobre decididas",
+      "revenue": "Receita fechada",
+      "revenueHint": "Somatório das propostas aceitas"
+    },
+    "charts": {
+      "revenue": "Receita por mês",
+      "revenueSeries": "Receita",
+      "leads": "Leads por mês",
+      "leadsSeries": "Leads",
+      "lastMonths": "Últimos {{count}} meses"
+    },
+    "funnel": {
+      "title": "Funil por estágio"
+    },
+    "byService": {
+      "title": "Receita por serviço",
+      "empty": "Nenhuma proposta aceita ainda."
+    },
+    "latestLeads": "Últimos leads",
+    "openProposals": "Propostas em aberto",
+    "noOpenProposals": "Nenhuma proposta aguardando resposta.",
+    "caseCount": "{{count}} cases publicados no site."
+  },
+  "leads": {
+    "title": "Leads",
+    "subtitle": "Arraste o cartão entre as colunas para mudar o estágio.",
+    "searchPlaceholder": "Buscar por nome, empresa ou e-mail",
+    "count": "{{count}} leads",
+    "emptyColumn": "Nada aqui",
+    "moved": "Lead movido para {{stage}}",
+    "convert": "Gerar proposta",
+    "converted": "Proposta criada como rascunho",
+    "proposalTitle": "Proposta para {{name}}",
+    "removed": "Lead removido",
+    "changeStage": "Mudar estágio"
+  },
+  "proposals": {
+    "title": "Propostas",
+    "subtitle": "Itens, desconto e status de cada proposta enviada.",
+    "new": "Nova proposta",
+    "newTitle": "Proposta sem título",
+    "newItem": "Novo item",
+    "code": "Código",
+    "client": "Cliente",
+    "titleColumn": "Título",
+    "validUntil": "Válida até",
+    "item": "Item",
+    "qty": "Qtd",
+    "unitPrice": "Valor unitário",
+    "lineTotal": "Total",
+    "addItem": "Adicionar item",
+    "noItems": "Nenhum item na proposta.",
+    "subtotal": "Subtotal",
+    "discount": "Desconto (%)",
+    "total": "Total",
+    "expired": "Vencida",
+    "statusChanged": "Status alterado para {{status}}",
+    "removed": "Proposta removida",
+    "emptyTitle": "Nenhuma proposta",
+    "emptyDesc": "Crie uma proposta ou converta um lead."
+  },
+  "casesAdmin": {
+    "title": "Cases",
+    "subtitle": "O que aparece no portfólio do site.",
+    "new": "Novo case",
+    "newTitle": "Novo case",
+    "editTitle": "Editar case",
+    "published": "Publicado",
+    "draft": "Rascunho",
+    "featured": "Destaque",
+    "publishedLabel": "Publicar no site",
+    "featuredLabel": "Mostrar em destaque",
+    "created": "Case criado",
+    "updated": "Case atualizado",
+    "removed": "Case removido",
+    "emptyTitle": "Nenhum case",
+    "emptyDesc": "Adicione o primeiro projeto do portfólio.",
+    "form": {
+      "title": "Título",
+      "client": "Cliente",
+      "year": "Ano",
+      "category": "Categoria",
+      "tags": "Tags (separadas por vírgula)",
+      "summary": "Resumo",
+      "challenge": "O desafio",
+      "solution": "O que fizemos"
+    }
+  },
+  "servicesAdmin": {
+    "title": "Serviços",
+    "subtitle": "O que o estúdio oferece e quanto custa.",
+    "new": "Novo serviço",
+    "newTitle": "Novo serviço",
+    "editTitle": "Editar serviço",
+    "created": "Serviço criado",
+    "updated": "Serviço atualizado",
+    "removed": "Serviço removido",
+    "form": {
+      "name": "Nome",
+      "category": "Categoria",
+      "icon": "Ícone",
+      "price": "A partir de",
+      "weeks": "Semanas",
+      "summary": "Resumo",
+      "description": "Descrição",
+      "deliverables": "Entregáveis",
+      "deliverablesHint": "Um por linha."
+    }
+  },
+  "testimonials": {
+    "title": "Depoimentos",
+    "subtitle": "Só os aprovados aparecem no site.",
+    "new": "Novo depoimento",
+    "newTitle": "Novo depoimento",
+    "editTitle": "Editar depoimento",
+    "approved": "Aprovado",
+    "pending": "Aguardando",
+    "approve": "Aprovar",
+    "unapprove": "Tirar do site",
+    "approvedMsg": "Depoimento aprovado",
+    "unapproved": "Depoimento retirado do site",
+    "created": "Depoimento criado",
+    "updated": "Depoimento atualizado",
+    "removed": "Depoimento removido",
+    "linkedCase": "Case",
+    "emptyTitle": "Nenhum depoimento",
+    "emptyDesc": "Peça um depoimento ao fim do próximo projeto.",
+    "filters": {
+      "all": "Todos",
+      "approved": "Aprovados",
+      "pending": "Aguardando"
+    },
+    "form": {
+      "author": "Nome",
+      "role": "Cargo",
+      "company": "Empresa",
+      "rating": "Nota",
+      "case": "Case relacionado",
+      "noCase": "Nenhum",
+      "quote": "Depoimento"
+    }
+  },
+  "settings": {
+    "title": "Configurações",
+    "subtitle": "Ajuste seu perfil, os dados do estúdio e as preferências.",
+    "tabs": {
+      "profile": "Perfil",
+      "studio": "Estúdio",
+      "notifications": "Notificações"
+    },
+    "profile": {
+      "title": "Dados do perfil",
+      "name": "Nome",
+      "email": "E-mail",
+      "role": "Função",
+      "saved": "Perfil atualizado"
+    },
+    "studio": {
+      "title": "Dados do estúdio",
+      "name": "Nome do estúdio",
+      "cnpj": "CNPJ",
+      "phone": "Telefone",
+      "address": "Endereço",
+      "saved": "Estúdio atualizado"
+    },
+    "notifications": {
+      "title": "Notificações",
+      "newLead": "Avisar sobre novos leads",
+      "newLeadDesc": "Receba um aviso quando alguém enviar o briefing.",
+      "proposalAccepted": "Proposta aceita",
+      "proposalAcceptedDesc": "Aviso quando um cliente aceitar uma proposta.",
+      "weeklySummary": "Resumo semanal",
+      "weeklySummaryDesc": "Um resumo do funil toda segunda de manhã."
+    },
+    "saved": "Preferência salva"
+  },
+  "cookie": {
+    "title": "Usamos cookies",
+    "desc": "Utilizamos cookies para melhorar sua experiência.",
+    "policy": "Política de privacidade",
+    "accept": "Aceitar",
+    "decline": "Recusar"
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "desc": "A página que você procura não existe ou foi movida.",
+    "back": "Voltar ao painel",
+    "home": "Ir para o início"
+  }
+}

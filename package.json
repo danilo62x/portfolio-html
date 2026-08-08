@@ -1,0 +1,17 @@
+{
+  "name": "html-portfolio-template",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tailwindcss -i ./assets/css/app.css -o ./assets/css/tailwind.css --minify",
+    "watch": "tailwindcss -i ./assets/css/app.css -o ./assets/css/tailwind.css --watch",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.0.0",
+    "@tailwindcss/vite": "^4.0.0",
+    "tailwindcss": "^4.0.0",
+    "vite": "^6.0.7"
+  }
+}
