@@ -972,7 +972,7 @@
     const ui = UIState.get();
     if (!ui.showCookieBanner) return '';
     return (
-      `<div class="fixed inset-x-0 bottom-0 z-[90] p-4"><div class="surface-card mx-auto flex max-w-3xl flex-col gap-4 rounded-2xl border p-5 shadow-theme-xl sm:flex-row sm:items-center">` +
+      `<div class="fixed inset-x-0 bottom-0 z-[60] p-4"><div class="surface-card mx-auto flex max-w-3xl flex-col gap-4 rounded-2xl border p-5 shadow-theme-xl sm:flex-row sm:items-center">` +
       `<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-500 dark:bg-brand-500/15">${icon('cookie', { size: 22 })}</span>` +
       `<div class="flex-1"><p class="text-sm font-semibold text-heading">${t('cookie.title')}</p>` +
       `<p class="mt-0.5 text-xs text-muted">${t('cookie.desc')} <a href="#" class="font-medium text-brand-500 hover:text-brand-600">${t(
